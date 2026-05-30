@@ -1,0 +1,2254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0e1a">
+    <meta name="description" content="AI热点洞察 - 基于AI技术的每日热点新闻分析与行业洞察">
+    <title>AI热点洞察</title>
+    <!-- Google Fonts: Noto Sans SC -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================
+           CSS 变量 - 全局设计令牌
+           ======================================== */
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: rgba(17, 24, 39, 0.8);
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --bg-glass-hover: rgba(255, 255, 255, 0.1);
+            --color-primary: #00d4ff;
+            --color-secondary: #8b5cf6;
+            --color-accent: #10b981;
+            --color-warning: #f59e0b;
+            --color-danger: #ef4444;
+            --color-text: #e5e7eb;
+            --color-text-secondary: #9ca3af;
+            --color-text-dim: #6b7280;
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(0, 212, 255, 0.3);
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 0 20px rgba(0, 212, 255, 0.15);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --nav-height: 64px;
+            --header-height: 56px;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        /* ========================================
+           基础重置与全局样式
+           ======================================== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-primary);
+            color: var(--color-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ========================================
+           应用容器 - 移动端优先居中布局
+           ======================================== */
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-primary);
+        }
+
+        /* ========================================
+           背景装饰 - 渐变光晕效果
+           ======================================== */
+        .bg-decoration {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 480px;
+            max-width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+
+        .bg-orb--1 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--color-primary), transparent);
+            top: -100px;
+            right: -80px;
+            animation-delay: 0s;
+        }
+
+        .bg-orb--2 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, var(--color-secondary), transparent);
+            top: 40%;
+            left: -100px;
+            animation-delay: -7s;
+        }
+
+        .bg-orb--3 {
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, var(--color-accent), transparent);
+            bottom: 10%;
+            right: -60px;
+            animation-delay: -14s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(20px, -30px) scale(1.05); }
+            50% { transform: translate(-15px, 20px) scale(0.95); }
+            75% { transform: translate(10px, 15px) scale(1.02); }
+        }
+
+        /* ========================================
+           顶部导航栏
+           ======================================== */
+        .app-header {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 480px;
+            max-width: 100vw;
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            z-index: 100;
+            background: rgba(10, 14, 26, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .app-header__title {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+        }
+
+        .app-header__date {
+            position: absolute;
+            right: 20px;
+            font-size: 12px;
+            color: var(--color-text-dim);
+        }
+
+        /* ========================================
+           页面内容区域
+           ======================================== */
+        .page-content {
+            position: relative;
+            z-index: 1;
+            padding-top: var(--header-height);
+            padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 16px);
+            min-height: 100vh;
+        }
+
+        /* 页面切换动画 */
+        .page {
+            display: none;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ========================================
+           底部导航栏
+           ======================================== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 480px;
+            max-width: 100vw;
+            height: calc(var(--nav-height) + var(--safe-bottom));
+            padding-bottom: var(--safe-bottom);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            z-index: 100;
+            background: rgba(10, 14, 26, 0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 1px solid var(--border-glass);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            border: none;
+            background: none;
+            color: var(--color-text-dim);
+            font-family: var(--font-family);
+            font-size: 11px;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.2s ease;
+            position: relative;
+        }
+
+        .nav-item:active {
+            transform: scale(0.92);
+        }
+
+        .nav-item.active {
+            color: var(--color-primary);
+        }
+
+        /* 导航图标 - 使用SVG */
+        .nav-item__icon {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item.active .nav-item__icon {
+            transform: translateY(-2px);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 2px;
+            background: var(--color-primary);
+            border-radius: 1px;
+            box-shadow: 0 0 8px var(--color-primary);
+        }
+
+        /* ========================================
+           首页 - 新闻卡片流
+           ======================================== */
+        .section-header {
+            padding: 20px 20px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-header__title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .section-header__subtitle {
+            font-size: 12px;
+            color: var(--color-text-dim);
+            margin-top: 4px;
+        }
+
+        /* 分类标签栏 */
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 0 20px 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-tab {
+            flex-shrink: 0;
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border-glass);
+            background: var(--bg-glass);
+            color: var(--color-text-secondary);
+            font-size: 13px;
+            font-family: var(--font-family);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .category-tab:active {
+            transform: scale(0.95);
+        }
+
+        .category-tab.active {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 2px 12px rgba(0, 212, 255, 0.3);
+        }
+
+        /* 新闻卡片 */
+        .news-list {
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .news-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .news-card:active {
+            transform: scale(0.98);
+        }
+
+        .news-card:hover {
+            border-color: var(--border-glow);
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* 卡片顶部渐变装饰条 */
+        .news-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .news-card:hover::before {
+            opacity: 1;
+        }
+
+        .news-card__meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .news-card__tag {
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        /* 不同分类的标签颜色 */
+        .tag--ai { background: linear-gradient(135deg, #00d4ff, #0099cc); }
+        .tag--office { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+        .tag--tool { background: linear-gradient(135deg, #10b981, #059669); }
+        .tag--dev { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+        .news-card__time {
+            font-size: 11px;
+            color: var(--color-text-dim);
+        }
+
+        .news-card__title {
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 8px;
+            color: var(--color-text);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .news-card__summary {
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .news-card__footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-glass);
+        }
+
+        .news-card__stats {
+            display: flex;
+            gap: 16px;
+        }
+
+        .news-card__stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: var(--color-text-dim);
+        }
+
+        .news-card__stat svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .news-card__hot {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--color-danger);
+            font-weight: 500;
+        }
+
+        /* ========================================
+           洞察页 - 圆桌会议
+           ======================================== */
+        .roundtable {
+            padding: 0 16px;
+        }
+
+        .roundtable__intro {
+            padding: 16px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            line-height: 1.7;
+        }
+
+        .expert-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .expert-card:active {
+            transform: scale(0.98);
+        }
+
+        .expert-card__header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        /* 专家头像 - CSS渐变圆形 */
+        .expert-card__avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            position: relative;
+        }
+
+        .expert-card__avatar::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 50%;
+            padding: 2px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+
+        .avatar--1 { background: linear-gradient(135deg, #00d4ff, #0099cc); }
+        .avatar--2 { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+        .avatar--3 { background: linear-gradient(135deg, #10b981, #059669); }
+        .avatar--4 { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+        .expert-card__info {
+            flex: 1;
+        }
+
+        .expert-card__name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .expert-card__role {
+            font-size: 12px;
+            color: var(--color-text-dim);
+            margin-top: 2px;
+        }
+
+        .expert-card__quote {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            line-height: 1.7;
+            padding-left: 14px;
+            border-left: 3px solid;
+            border-image: linear-gradient(to bottom, var(--color-primary), var(--color-secondary)) 1;
+        }
+
+        .expert-card__tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .expert-card__keyword {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            background: var(--bg-glass);
+            color: var(--color-text-dim);
+            border: 1px solid var(--border-glass);
+        }
+
+        /* ========================================
+           洞察页 - 痛点雷达图
+           ======================================== */
+        .radar-section {
+            padding: 0 16px;
+            margin-top: 8px;
+        }
+
+        .radar-container {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .radar-container__title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--color-text);
+        }
+
+        .radar-canvas-wrap {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        #radarCanvas {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .radar-legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .radar-legend__item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--color-text-secondary);
+        }
+
+        .radar-legend__dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* ========================================
+           工具页 - 效率计算器
+           ======================================== */
+        .tool-section {
+            padding: 0 16px;
+        }
+
+        .tool-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .tool-card__title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tool-card__title svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .tool-card__desc {
+            font-size: 13px;
+            color: var(--color-text-dim);
+            margin-bottom: 20px;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-glass);
+            background: var(--bg-glass);
+            color: var(--color-text);
+            font-size: 15px;
+            font-family: var(--font-family);
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            -webkit-appearance: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--color-text-dim);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-glass);
+            background: var(--bg-glass);
+            color: var(--color-text);
+            font-size: 15px;
+            font-family: var(--font-family);
+            outline: none;
+            transition: border-color 0.3s ease;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            border-color: var(--color-primary);
+        }
+
+        /* 按钮 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: var(--font-family);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.3s ease, opacity 0.2s ease;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn--primary {
+            width: 100%;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn--primary:hover {
+            box-shadow: 0 6px 24px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn--secondary {
+            width: 100%;
+            background: var(--bg-glass);
+            color: var(--color-text);
+            border: 1px solid var(--border-glass);
+        }
+
+        /* 计算结果 */
+        .calc-result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(139, 92, 246, 0.08));
+            border: 1px solid var(--border-glow);
+            display: none;
+        }
+
+        .calc-result.show {
+            display: block;
+            animation: fadeSlideUp 0.4s ease;
+        }
+
+        .calc-result__title {
+            font-size: 14px;
+            color: var(--color-text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .calc-result__grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .calc-result__item {
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-glass);
+            text-align: center;
+        }
+
+        .calc-result__value {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .calc-result__label {
+            font-size: 11px;
+            color: var(--color-text-dim);
+            margin-top: 4px;
+        }
+
+        .calc-result__bar {
+            margin-top: 16px;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--bg-glass);
+            overflow: hidden;
+        }
+
+        .calc-result__bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+            width: 0;
+            transition: width 1s ease;
+        }
+
+        .calc-result__bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--color-text-dim);
+            margin-top: 6px;
+        }
+
+        /* ========================================
+           工具页 - 每日热点摘要生成器
+           ======================================== */
+        .summary-output {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            min-height: 120px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--color-text-secondary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-output.generating {
+            border-color: var(--border-glow);
+        }
+
+        .summary-output__text {
+            white-space: pre-wrap;
+        }
+
+        /* 打字光标效果 */
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 16px;
+            background: var(--color-primary);
+            margin-left: 2px;
+            vertical-align: text-bottom;
+            animation: blink 0.8s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .summary-output__label {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 10px;
+            color: var(--color-text-dim);
+            background: var(--bg-primary);
+            padding: 2px 8px;
+            border-radius: 8px;
+        }
+
+        /* ========================================
+           我的页面
+           ======================================== */
+        .profile-section {
+            padding: 20px 16px;
+        }
+
+        .profile-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-xl);
+            padding: 28px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(139, 92, 246, 0.15));
+        }
+
+        .profile-card__avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+            margin: 0 auto 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-card__name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--color-text);
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-card__bio {
+            font-size: 13px;
+            color: var(--color-text-dim);
+            margin-top: 4px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-stats__item {
+            text-align: center;
+        }
+
+        .profile-stats__value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .profile-stats__label {
+            font-size: 11px;
+            color: var(--color-text-dim);
+            margin-top: 2px;
+        }
+
+        /* 菜单列表 */
+        .menu-list {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 20px;
+            border: none;
+            background: none;
+            width: 100%;
+            font-family: var(--font-family);
+            font-size: 14px;
+            color: var(--color-text);
+            cursor: pointer;
+            transition: background 0.2s ease;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item:active {
+            background: var(--bg-glass-hover);
+        }
+
+        .menu-item__icon {
+            width: 20px;
+            height: 20px;
+            color: var(--color-primary);
+        }
+
+        .menu-item__text {
+            flex: 1;
+            text-align: left;
+        }
+
+        .menu-item__arrow {
+            width: 16px;
+            height: 16px;
+            color: var(--color-text-dim);
+        }
+
+        /* ========================================
+           滚动动画
+           ======================================== */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ========================================
+           通用动画关键帧
+           ======================================== */
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* 加载动画 */
+        .loading-dots {
+            display: inline-flex;
+            gap: 4px;
+        }
+
+        .loading-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            animation: pulse 1.4s ease-in-out infinite;
+        }
+
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        /* ========================================
+           Toast 通知
+           ======================================== */
+        .toast {
+            position: fixed;
+            top: calc(var(--header-height) + 12px);
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            background: rgba(16, 185, 129, 0.9);
+            color: #fff;
+            font-size: 13px;
+            font-family: var(--font-family);
+            z-index: 200;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+            max-width: 300px;
+            text-align: center;
+            backdrop-filter: blur(12px);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ========================================
+           滚动条美化
+           ======================================== */
+        ::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        /* ========================================
+           响应式适配
+           ======================================== */
+        @media (max-width: 380px) {
+            .calc-result__grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (min-width: 481px) {
+            .app-container {
+                border-left: 1px solid var(--border-glass);
+                border-right: 1px solid var(--border-glass);
+                box-shadow: 0 0 60px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        /* ========================================
+           无障碍 - 减少动画偏好
+           ======================================== */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景装饰光晕 -->
+    <div class="bg-decoration" aria-hidden="true">
+        <div class="bg-orb bg-orb--1"></div>
+        <div class="bg-orb bg-orb--2"></div>
+        <div class="bg-orb bg-orb--3"></div>
+    </div>
+
+    <!-- 应用主容器 -->
+    <div class="app-container" id="app">
+
+        <!-- 顶部导航栏 -->
+        <header class="app-header">
+            <h1 class="app-header__title">AI热点洞察</h1>
+            <span class="app-header__date" id="headerDate"></span>
+        </header>
+
+        <!-- 页面内容区域 -->
+        <main class="page-content">
+
+            <!-- ========== 首页 ========== -->
+            <section class="page active" id="pageHome">
+                <!-- 头部欢迎 -->
+                <div class="section-header animate-on-scroll">
+                    <div>
+                        <h2 class="section-header__title">今日热点</h2>
+                        <p class="section-header__subtitle">基于AI分析的实时热点追踪</p>
+                    </div>
+                </div>
+
+                <!-- 分类标签栏 -->
+                <div class="category-tabs animate-on-scroll" id="categoryTabs">
+                    <button class="category-tab active" data-category="all">全部</button>
+                    <button class="category-tab" data-category="ai">AI技术</button>
+                    <button class="category-tab" data-category="office">办公自动化</button>
+                    <button class="category-tab" data-category="tool">效率工具</button>
+                    <button class="category-tab" data-category="dev">开发者趋势</button>
+                </div>
+
+                <!-- 新闻卡片列表 -->
+                <div class="news-list" id="newsList">
+                    <!-- 由JS动态渲染 -->
+                </div>
+            </section>
+
+            <!-- ========== 洞察页 ========== -->
+            <section class="page" id="pageInsight">
+                <!-- 圆桌会议 -->
+                <div class="section-header animate-on-scroll">
+                    <div>
+                        <h2 class="section-header__title">圆桌会议</h2>
+                        <p class="section-header__subtitle">行业领袖观点碰撞</p>
+                    </div>
+                </div>
+
+                <div class="roundtable">
+                    <div class="roundtable__intro animate-on-scroll">
+                        本期圆桌邀请了4位AI领域重量级嘉宾，围绕"AI Agent如何重塑工作方式"展开深度对话，从技术演进、商业落地、开发者生态、效率革命四个维度分享独到见解。
+                    </div>
+                    <div id="expertList">
+                        <!-- 由JS动态渲染 -->
+                    </div>
+                </div>
+
+                <!-- 痛点雷达图 -->
+                <div class="section-header animate-on-scroll" style="margin-top: 8px;">
+                    <div>
+                        <h2 class="section-header__title">行业痛点雷达</h2>
+                        <p class="section-header__subtitle">五大维度深度分析</p>
+                    </div>
+                </div>
+
+                <div class="radar-section">
+                    <div class="radar-container animate-on-scroll">
+                        <div class="radar-container__title">AI应用痛点评估</div>
+                        <div class="radar-canvas-wrap">
+                            <canvas id="radarCanvas" width="640" height="640"></canvas>
+                        </div>
+                        <div class="radar-legend">
+                            <div class="radar-legend__item">
+                                <span class="radar-legend__dot" style="background: var(--color-primary);"></span>
+                                当前痛点
+                            </div>
+                            <div class="radar-legend__item">
+                                <span class="radar-legend__dot" style="background: var(--color-accent);"></span>
+                                期望改善
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== 工具页 ========== -->
+            <section class="page" id="pageTools">
+                <div class="section-header animate-on-scroll">
+                    <div>
+                        <h2 class="section-header__title">效率工具</h2>
+                        <p class="section-header__subtitle">AI驱动的实用计算工具</p>
+                    </div>
+                </div>
+
+                <div class="tool-section">
+                    <!-- 效率计算器 -->
+                    <div class="tool-card animate-on-scroll">
+                        <h3 class="tool-card__title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                            AI Agent 效率计算器
+                        </h3>
+                        <p class="tool-card__desc">输入你的工作时间，计算使用AI Agent后可节省的时间与效率提升</p>
+
+                        <div class="form-group">
+                            <label class="form-label">每日工作时长（小时）</label>
+                            <input type="number" class="form-input" id="workHours" placeholder="例如：8" min="1" max="24" step="0.5">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">工作类型</label>
+                            <select class="form-select" id="workType">
+                                <option value="dev">软件开发</option>
+                                <option value="design">UI/UX设计</option>
+                                <option value="writing">内容创作</option>
+                                <option value="data">数据分析</option>
+                                <option value="marketing">市场营销</option>
+                                <option value="management">项目管理</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">AI工具使用熟练度</label>
+                            <select class="form-select" id="aiLevel">
+                                <option value="beginner">初学者（刚接触）</option>
+                                <option value="intermediate" selected>中级（日常使用）</option>
+                                <option value="advanced">高级（深度集成）</option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn--primary" id="calcBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                            计算效率提升
+                        </button>
+
+                        <div class="calc-result" id="calcResult">
+                            <div class="calc-result__title">效率分析报告</div>
+                            <div class="calc-result__grid" id="calcGrid">
+                                <!-- 由JS动态渲染 -->
+                            </div>
+                            <div class="calc-result__bar">
+                                <div class="calc-result__bar-fill" id="calcBarFill"></div>
+                            </div>
+                            <div class="calc-result__bar-label">
+                                <span>当前效率</span>
+                                <span id="calcBarLabel">AI Agent加持后</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 每日热点摘要生成器 -->
+                    <div class="tool-card animate-on-scroll">
+                        <h3 class="tool-card__title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                            每日热点摘要生成器
+                        </h3>
+                        <p class="tool-card__desc">AI自动分析今日热点，生成结构化摘要报告</p>
+
+                        <div class="form-group">
+                            <label class="form-label">摘要风格</label>
+                            <select class="form-select" id="summaryStyle">
+                                <option value="professional">专业报告</option>
+                                <option value="casual">轻松阅读</option>
+                                <option value="bullet">要点速览</option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn--primary" id="generateBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            生成今日摘要
+                        </button>
+
+                        <div class="summary-output" id="summaryOutput">
+                            <span class="summary-output__label">AI生成</span>
+                            <div class="summary-output__text" id="summaryText">
+                                点击上方按钮，AI将为你生成今日热点摘要...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== 我的页面 ========== -->
+            <section class="page" id="pageProfile">
+                <div class="profile-section">
+                    <!-- 个人信息卡片 -->
+                    <div class="profile-card animate-on-scroll">
+                        <div class="profile-card__avatar">AI</div>
+                        <div class="profile-card__name">AI洞察用户</div>
+                        <div class="profile-card__bio">关注AI前沿，洞察行业趋势</div>
+                        <div class="profile-stats">
+                            <div class="profile-stats__item">
+                                <div class="profile-stats__value">128</div>
+                                <div class="profile-stats__label">已读热点</div>
+                            </div>
+                            <div class="profile-stats__item">
+                                <div class="profile-stats__value">56</div>
+                                <div class="profile-stats__label">收藏文章</div>
+                            </div>
+                            <div class="profile-stats__item">
+                                <div class="profile-stats__value">32</div>
+                                <div class="profile-stats__label">使用天数</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 功能菜单 -->
+                    <div class="menu-list animate-on-scroll">
+                        <button class="menu-item" data-action="favorites">
+                            <svg class="menu-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+                            <span class="menu-item__text">我的收藏</span>
+                            <svg class="menu-item__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                        <button class="menu-item" data-action="history">
+                            <svg class="menu-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <span class="menu-item__text">浏览历史</span>
+                            <svg class="menu-item__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                        <button class="menu-item" data-action="download">
+                            <svg class="menu-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            <span class="menu-item__text">离线下载</span>
+                            <svg class="menu-item__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                    </div>
+
+                    <div class="menu-list animate-on-scroll">
+                        <button class="menu-item" data-action="settings">
+                            <svg class="menu-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                            <span class="menu-item__text">设置</span>
+                            <svg class="menu-item__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                        <button class="menu-item" data-action="about">
+                            <svg class="menu-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            <span class="menu-item__text">关于</span>
+                            <svg class="menu-item__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                        <button class="menu-item" data-action="feedback">
+                            <svg class="menu-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                            <span class="menu-item__text">意见反馈</span>
+                            <svg class="menu-item__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                    </div>
+
+                    <!-- 版本信息 -->
+                    <div class="animate-on-scroll" style="text-align: center; padding: 24px 0; font-size: 12px; color: var(--color-text-dim);">
+                        AI热点洞察 v1.0.0<br>
+                        Powered by AI Analytics
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- 底部导航栏 -->
+        <nav class="bottom-nav" id="bottomNav">
+            <button class="nav-item active" data-page="pageHome">
+                <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                <span>首页</span>
+            </button>
+            <button class="nav-item" data-page="pageInsight">
+                <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="16" x2="12" y2="12"/>
+                    <line x1="12" y1="8" x2="12.01" y2="8"/>
+                </svg>
+                <span>洞察</span>
+            </button>
+            <button class="nav-item" data-page="pageTools">
+                <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+                </svg>
+                <span>工具</span>
+            </button>
+            <button class="nav-item" data-page="pageProfile">
+                <svg class="nav-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+                <span>我的</span>
+            </button>
+        </nav>
+
+        <!-- Toast 通知 -->
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script>
+    /* ================================================
+       AI热点洞察 - 主应用脚本
+       ================================================ */
+    (function () {
+        'use strict';
+
+        /* ============================================
+           数据定义
+           ============================================ */
+
+        /**
+         * 新闻数据 - 10条当日热点
+         * 分类：ai(AI技术), office(办公自动化), tool(效率工具), dev(开发者趋势)
+         */
+        const NEWS_DATA = [
+            {
+                id: 1,
+                category: 'ai',
+                tag: 'AI技术',
+                title: 'GPT-5发布在即：多模态推理能力实现质的飞跃',
+                summary: 'OpenAI确认GPT-5将在年内发布，新模型在多模态推理、长文本理解和代码生成方面取得重大突破，推理速度提升3倍的同时成本降低60%。',
+                time: '2小时前',
+                views: '12.8万',
+                comments: '3,256',
+                hot: true
+            },
+            {
+                id: 2,
+                category: 'ai',
+                tag: 'AI技术',
+                title: 'Claude 4推出"深度思考"模式：复杂任务准确率提升40%',
+                summary: 'Anthropic发布Claude 4最新版本，引入"深度思考"推理模式，在数学证明、法律分析和科研论文解读等复杂任务上表现卓越。',
+                time: '3小时前',
+                views: '8.6万',
+                comments: '1,892',
+                hot: true
+            },
+            {
+                id: 3,
+                category: 'office',
+                tag: '办公自动化',
+                title: '微软Copilot全面接入Office 365：文档处理效率提升65%',
+                summary: '微软宣布Copilot AI助手深度集成至Word、Excel、PowerPoint全系列，支持一键生成报告、自动数据分析、智能排版等功能。',
+                time: '4小时前',
+                views: '6.2万',
+                comments: '1,445',
+                hot: false
+            },
+            {
+                id: 4,
+                category: 'dev',
+                tag: '开发者趋势',
+                title: 'GitHub Copilot X支持全流程开发：从需求到部署一站式AI辅助',
+                summary: 'GitHub推出Copilot X升级版，覆盖需求分析、架构设计、代码编写、测试生成、CI/CD配置全开发流程，被开发者称为"AI结对编程2.0"。',
+                time: '5小时前',
+                views: '9.3万',
+                comments: '2,678',
+                hot: true
+            },
+            {
+                id: 5,
+                category: 'tool',
+                tag: '效率工具',
+                title: 'Notion AI 2.0发布：智能工作空间重新定义团队协作',
+                summary: 'Notion推出AI 2.0版本，新增AI项目看板、智能日程规划、跨文档知识图谱等功能，团队协作效率平均提升50%。',
+                time: '5小时前',
+                views: '5.7万',
+                comments: '1,123',
+                hot: false
+            },
+            {
+                id: 6,
+                category: 'ai',
+                tag: 'AI技术',
+                title: '国产大模型DeepSeek-V3登顶多项基准测试：开源生态迎来新标杆',
+                summary: 'DeepSeek发布V3版本，在MMLU、HumanEval等多项国际基准测试中超越GPT-4o，同时保持完全开源，引发全球开发者社区热议。',
+                time: '6小时前',
+                views: '15.2万',
+                comments: '4,521',
+                hot: true
+            },
+            {
+                id: 7,
+                category: 'dev',
+                tag: '开发者趋势',
+                title: 'Cursor IDE用户突破500万：AI原生开发工具成为主流',
+                summary: 'AI代码编辑器Cursor宣布月活用户突破500万，其独特的AI对话式编程体验正在改变开发者的编码习惯，传统IDE面临转型压力。',
+                time: '7小时前',
+                views: '7.1万',
+                comments: '2,034',
+                hot: false
+            },
+            {
+                id: 8,
+                category: 'office',
+                tag: '办公自动化',
+                title: '飞书智能助手升级：AI会议纪要准确率达98%',
+                summary: '飞书发布智能助手3.0版本，AI会议纪要支持多语言实时转写、自动提取行动项、智能生成会议摘要，准确率提升至98%。',
+                time: '8小时前',
+                views: '4.8万',
+                comments: '987',
+                hot: false
+            },
+            {
+                id: 9,
+                category: 'tool',
+                tag: '效率工具',
+                title: 'AI Agent框架LangGraph 1.0正式发布：构建多智能体应用更简单',
+                summary: 'LangChain推出LangGraph 1.0正式版，提供声明式多智能体编排、内置状态管理和可视化调试工具，大幅降低AI Agent开发门槛。',
+                time: '9小时前',
+                views: '6.9万',
+                comments: '1,567',
+                hot: false
+            },
+            {
+                id: 10,
+                category: 'dev',
+                tag: '开发者趋势',
+                title: 'Windsurf编辑器发布MCP协议支持：AI工具生态互联互通新时代',
+                summary: 'Windsurf成为首个原生支持MCP（Model Context Protocol）的AI编辑器，实现AI模型与外部工具、数据源的无缝连接，推动AI工具生态标准化。',
+                time: '10小时前',
+                views: '5.4万',
+                comments: '1,234',
+                hot: false
+            }
+        ];
+
+        /**
+         * 圆桌会议专家数据
+         */
+        const EXPERT_DATA = [
+            {
+                name: '李开复',
+                role: '创新工场创始人 / AI领域先驱',
+                avatar: '李',
+                avatarClass: 'avatar--1',
+                quote: 'AI Agent正在从"工具"进化为"同事"。未来每个知识工作者都将拥有一个AI助手团队，这不是替代，而是增强。2025年是AI Agent的元年，我们正在见证工作方式的历史性变革。',
+                keywords: ['AI Agent', '人机协作', '工作增强', '产业变革']
+            },
+            {
+                name: 'Sam Altman',
+                role: 'OpenAI CEO / 大模型推动者',
+                avatar: 'S',
+                avatarClass: 'avatar--2',
+                quote: '通用人工智能（AGI）的路径正在变得清晰。我们相信，到2026年底，AI系统将能够在绝大多数经济价值创造的任务中超越人类。关键是确保这种过渡是安全且有益的。',
+                keywords: ['AGI', '大模型', 'AI安全', '经济影响']
+            },
+            {
+                name: 'Andrej Karpathy',
+                role: '前特斯拉AI总监 / AI教育者',
+                avatar: 'A',
+                avatarClass: 'avatar--3',
+                quote: '理解AI的最佳方式是亲手构建它。我鼓励所有开发者不要只做AI的使用者，更要深入理解Transformer、注意力机制这些核心原理。未来的超级个体将是"懂AI的领域专家"。',
+                keywords: ['AI教育', 'Transformer', '超级个体', '深度学习']
+            },
+            {
+                name: '周鸿祎',
+                role: '360集团创始人 / 安全AI倡导者',
+                avatar: '周',
+                avatarClass: 'avatar--4',
+                quote: 'AI安全是数字经济的基石。随着AI Agent深入企业核心业务流程，安全不再是可选项而是必选项。我们需要建立"AI原生安全"体系，让安全能力与AI能力同步进化。',
+                keywords: ['AI安全', '数字安全', '企业AI', '安全体系']
+            }
+        ];
+
+        /**
+         * 雷达图数据 - 五大痛点维度
+         * 分值范围 0-100
+         */
+        const RADAR_DATA = {
+            labels: ['数据隐私', '技术门槛', '成本控制', '人才缺口', '落地难度'],
+            current: [82, 68, 75, 88, 72],  // 当前痛点严重程度
+            expected: [35, 30, 40, 25, 28]   // 期望改善后的水平
+        };
+
+        /**
+         * 效率计算器参数配置
+         * 不同工作类型的AI提效系数
+         */
+        const EFFICIENCY_CONFIG = {
+            dev: { label: '软件开发', baseSave: 0.35, aiBonus: 0.15 },
+            design: { label: 'UI/UX设计', baseSave: 0.30, aiBonus: 0.12 },
+            writing: { label: '内容创作', baseSave: 0.40, aiBonus: 0.18 },
+            data: { label: '数据分析', baseSave: 0.45, aiBonus: 0.20 },
+            marketing: { label: '市场营销', baseSave: 0.28, aiBonus: 0.10 },
+            management: { label: '项目管理', baseSave: 0.25, aiBonus: 0.08 }
+        };
+
+        /** AI熟练度系数 */
+        const AI_LEVEL_MULTIPLIER = {
+            beginner: 0.6,
+            intermediate: 1.0,
+            advanced: 1.4
+        };
+
+        /**
+         * 摘要模板数据
+         */
+        const SUMMARY_TEMPLATES = {
+            professional: {
+                title: '【AI热点日报】2025年5月30日',
+                content: `一、AI技术前沿\n\n今日AI技术领域持续升温。OpenAI确认GPT-5年内发布，多模态推理能力将实现质的飞跃；Anthropic推出Claude 4"深度思考"模式，复杂任务准确率提升40%；国产大模型DeepSeek-V3以开源姿态登顶多项国际基准，展现中国AI实力。\n\n二、办公自动化\n\n微软Copilot全面接入Office 365，文档处理效率提升65%；飞书智能助手3.0发布，AI会议纪要准确率达98%。企业级AI应用正从试点走向全面普及。\n\n三、开发者生态\n\nGitHub Copilot X支持全流程开发辅助，Cursor IDE用户突破500万，Windsurf率先支持MCP协议。AI原生开发工具正在重塑开发者的工作方式。\n\n四、效率工具\n\nNotion AI 2.0重新定义团队协作，LangGraph 1.0降低AI Agent开发门槛。工具层创新持续加速。\n\n五、趋势研判\n\nAI Agent从概念走向落地，多智能体协作成为新范式。建议关注AI安全、开源生态和垂直场景落地三大方向。`
+            },
+            casual: {
+                title: '今日AI圈大事盘点',
+                content: `嘿，今天的AI圈可太热闹了！给你划几个重点：\n\nGPT-5要来了！OpenAI确认年内发布，据说推理速度快3倍、成本降60%，期待值拉满。\n\n国产之光DeepSeek-V3开源登顶，在多个国际测试中超过了GPT-4o，开源社区沸腾了。\n\nClaude 4出了个"深度思考"模式，处理复杂问题准确率提升40%，写代码、做分析更强了。\n\n办公党也有好消息：微软Copilot全面入驻Office 365，文档处理效率提升65%；飞书AI会议纪要准确率到了98%，开会再也不怕漏要点。\n\n开发者这边，Cursor用户破500万，GitHub Copilot X覆盖全流程，AI编程工具越来越香。\n\n一句话总结：AI正在从"好用"变成"离不开"，你准备好了吗？`
+            },
+            bullet: {
+                title: '5月30日 AI热点速览',
+                content: `【技术突破】\n- GPT-5确认年内发布，多模态推理能力大幅提升\n- Claude 4"深度思考"模式上线，复杂任务准确率+40%\n- DeepSeek-V3开源登顶国际基准测试\n\n【办公升级】\n- 微软Copilot全面接入Office 365，效率+65%\n- 飞书AI会议纪要准确率达98%\n\n【开发趋势】\n- GitHub Copilot X覆盖全开发流程\n- Cursor IDE用户突破500万\n- Windsurf首发MCP协议支持\n\n【效率工具】\n- Notion AI 2.0重新定义团队协作\n- LangGraph 1.0正式发布\n\n【关键数据】\n- 今日热点阅读量：82.0万+\n- 最热话题：DeepSeek-V3开源登顶（15.2万阅读）\n- 行业情绪：积极乐观`
+            }
+        };
+
+
+        /* ============================================
+           DOM 元素引用
+           ============================================ */
+        const $ = (sel) => document.querySelector(sel);
+        const $$ = (sel) => document.querySelectorAll(sel);
+
+        const headerDate = $('#headerDate');
+        const newsList = $('#newsList');
+        const categoryTabs = $('#categoryTabs');
+        const expertList = $('#expertList');
+        const radarCanvas = $('#radarCanvas');
+        const calcBtn = $('#calcBtn');
+        const calcResult = $('#calcResult');
+        const calcGrid = $('#calcGrid');
+        const calcBarFill = $('#calcBarFill');
+        const calcBarLabel = $('#calcBarLabel');
+        const generateBtn = $('#generateBtn');
+        const summaryOutput = $('#summaryOutput');
+        const summaryText = $('#summaryText');
+        const toast = $('#toast');
+        const bottomNav = $('#bottomNav');
+
+
+        /* ============================================
+           工具函数
+           ============================================ */
+
+        /** 显示Toast通知 */
+        function showToast(message, duration) {
+            duration = duration || 2000;
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(function () {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        /** 格式化日期 */
+        function formatDate(date) {
+            var month = date.getMonth() + 1;
+            var day = date.getDate();
+            var weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+            var weekDay = weekDays[date.getDay()];
+            return month + '月' + day + '日 周' + weekDay;
+        }
+
+        /** 获取分类标签CSS类名 */
+        function getTagClass(category) {
+            var map = { ai: 'tag--ai', office: 'tag--office', tool: 'tag--tool', dev: 'tag--dev' };
+            return map[category] || 'tag--ai';
+        }
+
+
+        /* ============================================
+           渲染函数
+           ============================================ */
+
+        /** 渲染新闻卡片列表 */
+        function renderNewsList(category) {
+            var filtered = category === 'all'
+                ? NEWS_DATA
+                : NEWS_DATA.filter(function (n) { return n.category === category; });
+
+            var html = '';
+            filtered.forEach(function (news, index) {
+                html += '<article class="news-card animate-on-scroll" style="transition-delay: ' + (index * 0.08) + 's;" data-id="' + news.id + '">' +
+                    '<div class="news-card__meta">' +
+                        '<span class="news-card__tag ' + getTagClass(news.category) + '">' + news.tag + '</span>' +
+                        '<span class="news-card__time">' + news.time + '</span>' +
+                    '</div>' +
+                    '<h3 class="news-card__title">' + news.title + '</h3>' +
+                    '<p class="news-card__summary">' + news.summary + '</p>' +
+                    '<div class="news-card__footer">' +
+                        '<div class="news-card__stats">' +
+                            '<span class="news-card__stat">' +
+                                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>' +
+                                news.views +
+                            '</span>' +
+                            '<span class="news-card__stat">' +
+                                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>' +
+                                news.comments +
+                            '</span>' +
+                        '</div>' +
+                        (news.hot ? '<span class="news-card__hot">热门</span>' : '') +
+                    '</div>' +
+                '</article>';
+            });
+
+            newsList.innerHTML = html;
+
+            // 重新注册滚动动画观察器
+            observeScrollElements();
+        }
+
+        /** 渲染专家卡片列表 */
+        function renderExpertList() {
+            var html = '';
+            EXPERT_DATA.forEach(function (expert, index) {
+                var keywordsHtml = expert.keywords.map(function (kw) {
+                    return '<span class="expert-card__keyword">' + kw + '</span>';
+                }).join('');
+
+                html += '<div class="expert-card animate-on-scroll" style="transition-delay: ' + (index * 0.1) + 's;">' +
+                    '<div class="expert-card__header">' +
+                        '<div class="expert-card__avatar ' + expert.avatarClass + '">' + expert.avatar + '</div>' +
+                        '<div class="expert-card__info">' +
+                            '<div class="expert-card__name">' + expert.name + '</div>' +
+                            '<div class="expert-card__role">' + expert.role + '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<p class="expert-card__quote">' + expert.quote + '</p>' +
+                    '<div class="expert-card__tags">' + keywordsHtml + '</div>' +
+                '</div>';
+            });
+
+            expertList.innerHTML = html;
+        }
+
+
+        /* ============================================
+           Canvas 雷达图绘制
+           ============================================ */
+        var radarAnimProgress = 0;
+        var radarAnimId = null;
+
+        function drawRadar(progress) {
+            var ctx = radarCanvas.getContext('2d');
+            var W = radarCanvas.width;
+            var H = radarCanvas.height;
+            var cx = W / 2;
+            var cy = H / 2;
+            var maxR = Math.min(W, H) * 0.36;
+            var sides = RADAR_DATA.labels.length;
+            var angleStep = (Math.PI * 2) / sides;
+            var startAngle = -Math.PI / 2; // 从顶部开始
+
+            ctx.clearRect(0, 0, W, H);
+
+            // 绘制背景网格（5层）
+            for (var ring = 1; ring <= 5; ring++) {
+                var r = maxR * (ring / 5);
+                ctx.beginPath();
+                for (var i = 0; i <= sides; i++) {
+                    var angle = startAngle + angleStep * i;
+                    var x = cx + r * Math.cos(angle);
+                    var y = cy + r * Math.sin(angle);
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+
+            // 绘制轴线
+            for (var i = 0; i < sides; i++) {
+                var angle = startAngle + angleStep * i;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(cx + maxR * Math.cos(angle), cy + maxR * Math.sin(angle));
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+
+            // 绘制数据区域 - 当前痛点（青蓝色）
+            drawDataArea(ctx, cx, cy, maxR, sides, startAngle, angleStep, RADAR_DATA.current, progress,
+                'rgba(0, 212, 255, 0.15)', 'rgba(0, 212, 255, 0.8)', 2);
+
+            // 绘制数据区域 - 期望改善（绿色）
+            drawDataArea(ctx, cx, cy, maxR, sides, startAngle, angleStep, RADAR_DATA.expected, progress,
+                'rgba(16, 185, 129, 0.12)', 'rgba(16, 185, 129, 0.7)', 2);
+
+            // 绘制数据点 - 当前痛点
+            drawDataPoints(ctx, cx, cy, maxR, sides, startAngle, angleStep, RADAR_DATA.current, progress,
+                '#00d4ff');
+
+            // 绘制数据点 - 期望改善
+            drawDataPoints(ctx, cx, cy, maxR, sides, startAngle, angleStep, RADAR_DATA.expected, progress,
+                '#10b981');
+
+            // 绘制标签
+            for (var i = 0; i < sides; i++) {
+                var angle = startAngle + angleStep * i;
+                var labelR = maxR + 36;
+                var x = cx + labelR * Math.cos(angle);
+                var y = cy + labelR * Math.sin(angle);
+
+                ctx.font = '24px "Noto Sans SC", sans-serif';
+                ctx.fillStyle = '#9ca3af';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(RADAR_DATA.labels[i], x, y);
+            }
+        }
+
+        /** 绘制数据区域 */
+        function drawDataArea(ctx, cx, cy, maxR, sides, startAngle, angleStep, data, progress, fillColor, strokeColor, lineWidth) {
+            ctx.beginPath();
+            for (var i = 0; i <= sides; i++) {
+                var idx = i % sides;
+                var angle = startAngle + angleStep * idx;
+                var r = maxR * (data[idx] / 100) * progress;
+                var x = cx + r * Math.cos(angle);
+                var y = cy + r * Math.sin(angle);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.fillStyle = fillColor;
+            ctx.fill();
+            ctx.strokeStyle = strokeColor;
+            ctx.lineWidth = lineWidth;
+            ctx.stroke();
+        }
+
+        /** 绘制数据点 */
+        function drawDataPoints(ctx, cx, cy, maxR, sides, startAngle, angleStep, data, progress, color) {
+            for (var i = 0; i < sides; i++) {
+                var angle = startAngle + angleStep * i;
+                var r = maxR * (data[i] / 100) * progress;
+                var x = cx + r * Math.cos(angle);
+                var y = cy + r * Math.sin(angle);
+
+                ctx.beginPath();
+                ctx.arc(x, y, 6, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+
+                // 外圈光晕
+                ctx.beginPath();
+                ctx.arc(x, y, 10, 0, Math.PI * 2);
+                ctx.fillStyle = color.replace(')', ', 0.2)').replace('rgb', 'rgba');
+                // 简单处理颜色透明度
+                ctx.globalAlpha = 0.3;
+                ctx.fill();
+                ctx.globalAlpha = 1.0;
+            }
+        }
+
+        /** 雷达图动画 */
+        function animateRadar() {
+            radarAnimProgress = 0;
+            if (radarAnimId) cancelAnimationFrame(radarAnimId);
+
+            function step() {
+                radarAnimProgress += 0.025;
+                if (radarAnimProgress > 1) radarAnimProgress = 1;
+
+                drawRadar(radarAnimProgress);
+
+                if (radarAnimProgress < 1) {
+                    radarAnimId = requestAnimationFrame(step);
+                }
+            }
+
+            radarAnimId = requestAnimationFrame(step);
+        }
+
+
+        /* ============================================
+           效率计算器
+           ============================================ */
+        function calculateEfficiency() {
+            var workHours = parseFloat($('#workHours').value);
+            var workType = $('#workType').value;
+            var aiLevel = $('#aiLevel').value;
+
+            // 输入验证
+            if (!workHours || workHours <= 0 || workHours > 24) {
+                showToast('请输入有效的工作时长（1-24小时）');
+                return;
+            }
+
+            var config = EFFICIENCY_CONFIG[workType];
+            var levelMultiplier = AI_LEVEL_MULTIPLIER[aiLevel];
+
+            // 计算效率提升
+            var saveRate = config.baseSave * levelMultiplier;
+            var savedHours = workHours * saveRate;
+            var actualHours = workHours - savedHours;
+            var efficiencyGain = ((workHours - actualHours) / workHours * 100);
+
+            // 渲染结果
+            calcGrid.innerHTML =
+                '<div class="calc-result__item">' +
+                    '<div class="calc-result__value">' + savedHours.toFixed(1) + 'h</div>' +
+                    '<div class="calc-result__label">每日节省时间</div>' +
+                '</div>' +
+                '<div class="calc-result__item">' +
+                    '<div class="calc-result__value">' + efficiencyGain.toFixed(0) + '%</div>' +
+                    '<div class="calc-result__label">效率提升</div>' +
+                '</div>' +
+                '<div class="calc-result__item">' +
+                    '<div class="calc-result__value">' + actualHours.toFixed(1) + 'h</div>' +
+                    '<div class="calc-result__label">等效工作时间</div>' +
+                '</div>' +
+                '<div class="calc-result__item">' +
+                    '<div class="calc-result__value">' + (savedHours * 22).toFixed(0) + 'h</div>' +
+                    '<div class="calc-result__label">月均节省</div>' +
+                '</div>';
+
+            // 显示结果面板
+            calcResult.classList.add('show');
+
+            // 进度条动画
+            calcBarFill.style.width = '0%';
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    calcBarFill.style.width = efficiencyGain.toFixed(0) + '%';
+                });
+            });
+
+            calcBarLabel.textContent = '效率提升 ' + efficiencyGain.toFixed(0) + '%';
+            showToast('计算完成！使用AI Agent可每日节省 ' + savedHours.toFixed(1) + ' 小时');
+        }
+
+
+        /* ============================================
+           摘要生成器（模拟AI生成 + 打字机效果）
+           ============================================ */
+        var isGenerating = false;
+
+        function generateSummary() {
+            if (isGenerating) return;
+
+            var style = $('#summaryStyle').value;
+            var template = SUMMARY_TEMPLATES[style];
+            var fullText = template.title + '\n\n' + template.content;
+
+            isGenerating = true;
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div> 生成中...';
+            summaryOutput.classList.add('generating');
+            summaryText.innerHTML = '<span class="typing-cursor"></span>';
+
+            // 模拟延迟后开始打字
+            setTimeout(function () {
+                var charIndex = 0;
+                var speed = 20; // 每字符毫秒数
+
+                function typeChar() {
+                    if (charIndex < fullText.length) {
+                        // 每次添加1-3个字符，模拟不均匀打字速度
+                        var chunkSize = Math.random() > 0.7 ? 2 : 1;
+                        var chunk = fullText.substring(charIndex, charIndex + chunkSize);
+                        charIndex += chunkSize;
+
+                        // 移除光标，添加文字，再加光标
+                        var cursor = summaryText.querySelector('.typing-cursor');
+                        if (cursor) cursor.remove();
+                        summaryText.innerHTML += chunk + '<span class="typing-cursor"></span>';
+
+                        // 随机速度变化
+                        var delay = speed + Math.random() * 15;
+                        setTimeout(typeChar, delay);
+                    } else {
+                        // 打字完成
+                        var cursor = summaryText.querySelector('.typing-cursor');
+                        if (cursor) cursor.remove();
+                        isGenerating = false;
+                        generateBtn.disabled = false;
+                        generateBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> 重新生成';
+                        summaryOutput.classList.remove('generating');
+                        showToast('摘要生成完成');
+                    }
+                }
+
+                typeChar();
+            }, 800);
+        }
+
+
+        /* ============================================
+           SPA 路由切换
+           ============================================ */
+        var currentPage = 'pageHome';
+
+        function switchPage(pageId) {
+            if (pageId === currentPage) return;
+
+            // 隐藏当前页面
+            var currentEl = document.getElementById(currentPage);
+            if (currentEl) {
+                currentEl.classList.remove('visible');
+                setTimeout(function () {
+                    currentEl.classList.remove('active');
+                }, 350);
+            }
+
+            // 显示新页面
+            var newEl = document.getElementById(pageId);
+            if (newEl) {
+                setTimeout(function () {
+                    newEl.classList.add('active');
+                    // 强制重排后添加visible类触发动画
+                    void newEl.offsetHeight;
+                    newEl.classList.add('visible');
+                }, 100);
+            }
+
+            // 更新导航栏状态
+            var navItems = bottomNav.querySelectorAll('.nav-item');
+            navItems.forEach(function (item) {
+                item.classList.toggle('active', item.dataset.page === pageId);
+            });
+
+            currentPage = pageId;
+
+            // 切换到洞察页时触发雷达图动画
+            if (pageId === 'pageInsight') {
+                setTimeout(animateRadar, 400);
+            }
+
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+
+        /* ============================================
+           滚动动画 - IntersectionObserver
+           ============================================ */
+        var scrollObserver = null;
+
+        function observeScrollElements() {
+            // 断开旧观察器
+            if (scrollObserver) scrollObserver.disconnect();
+
+            scrollObserver = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+                        // 动画完成后取消观察，节省性能
+                        scrollObserver.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -40px 0px'
+            });
+
+            var elements = $$('.animate-on-scroll:not(.animated)');
+            elements.forEach(function (el) {
+                scrollObserver.observe(el);
+            });
+        }
+
+
+        /* ============================================
+           事件委托 - 统一事件管理
+           ============================================ */
+        function initEventDelegation() {
+            // 底部导航切换
+            bottomNav.addEventListener('click', function (e) {
+                var navItem = e.target.closest('.nav-item');
+                if (navItem) {
+                    switchPage(navItem.dataset.page);
+                }
+            });
+
+            // 分类标签切换
+            categoryTabs.addEventListener('click', function (e) {
+                var tab = e.target.closest('.category-tab');
+                if (tab) {
+                    // 更新标签激活状态
+                    categoryTabs.querySelectorAll('.category-tab').forEach(function (t) {
+                        t.classList.remove('active');
+                    });
+                    tab.classList.add('active');
+
+                    // 筛选新闻
+                    renderNewsList(tab.dataset.category);
+                }
+            });
+
+            // 新闻卡片点击
+            newsList.addEventListener('click', function (e) {
+                var card = e.target.closest('.news-card');
+                if (card) {
+                    var newsId = card.dataset.id;
+                    var news = NEWS_DATA.find(function (n) { return n.id === parseInt(newsId); });
+                    if (news) {
+                        showToast('正在打开: ' + news.title.substring(0, 15) + '...');
+                    }
+                }
+            });
+
+            // 效率计算按钮
+            calcBtn.addEventListener('click', calculateEfficiency);
+
+            // 摘要生成按钮
+            generateBtn.addEventListener('click', generateSummary);
+
+            // 我的页面菜单点击
+            document.addEventListener('click', function (e) {
+                var menuItem = e.target.closest('.menu-item');
+                if (menuItem) {
+                    var action = menuItem.dataset.action;
+                    var actionMap = {
+                        favorites: '我的收藏功能即将上线',
+                        history: '浏览历史功能即将上线',
+                        download: '离线下载功能即将上线',
+                        settings: '设置页面即将上线',
+                        about: 'AI热点洞察 v1.0.0 - 基于AI的新闻分析应用',
+                        feedback: '感谢您的反馈！我们会持续改进'
+                    };
+                    showToast(actionMap[action] || '功能开发中');
+                }
+            });
+        }
+
+
+        /* ============================================
+           触摸滑动支持
+           ============================================ */
+        function initTouchSwipe() {
+            var touchStartX = 0;
+            var touchStartY = 0;
+            var touchEndX = 0;
+            var touchEndY = 0;
+            var pages = ['pageHome', 'pageInsight', 'pageTools', 'pageProfile'];
+            var minSwipeDistance = 60;
+
+            document.addEventListener('touchstart', function (e) {
+                touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
+            }, { passive: true });
+
+            document.addEventListener('touchend', function (e) {
+                touchEndX = e.changedTouches[0].screenX;
+                touchEndY = e.changedTouches[0].screenY;
+
+                var deltaX = touchEndX - touchStartX;
+                var deltaY = touchEndY - touchStartY;
+
+                // 只处理水平滑动（水平距离大于垂直距离）
+                if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+                    var currentIndex = pages.indexOf(currentPage);
+
+                    if (deltaX < 0 && currentIndex < pages.length - 1) {
+                        // 左滑 - 下一页
+                        switchPage(pages[currentIndex + 1]);
+                    } else if (deltaX > 0 && currentIndex > 0) {
+                        // 右滑 - 上一页
+                        switchPage(pages[currentIndex - 1]);
+                    }
+                }
+            }, { passive: true });
+        }
+
+
+        /* ============================================
+           初始化
+           ============================================ */
+        function init() {
+            // 设置日期
+            headerDate.textContent = formatDate(new Date());
+
+            // 渲染首页新闻
+            renderNewsList('all');
+
+            // 渲染专家列表
+            renderExpertList();
+
+            // 初始化事件委托
+            initEventDelegation();
+
+            // 初始化触摸滑动
+            initTouchSwipe();
+
+            // 初始化滚动动画
+            observeScrollElements();
+
+            // 首页默认显示动画
+            setTimeout(function () {
+                var homePage = document.getElementById('pageHome');
+                if (homePage) homePage.classList.add('visible');
+            }, 50);
+        }
+
+        // DOM加载完成后初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+    })();
+    </script>
+</body>
+</html>
