@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0e1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="AI热点速递 - 2026年6月AI/科技热点新闻聚合平台">
+  <title>AI热点速递</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ==================== 头部 Header ==================== -->
+  <header class="app-header">
+    <div class="header-title">
+      <div class="header-logo">AI</div>
+      <div class="header-text">
+        <h1>AI热点速递</h1>
+        <span class="subtitle">2026年6月 · 科技前沿</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="header-btn" id="themeToggle" aria-label="切换主题">
+        &#9789;
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== 主内容区域 ==================== -->
+  <main class="app-content" id="appContent">
+
+    <!-- ========== 首页 ========== -->
+    <section class="page active" id="page-home">
+      <!-- 分类横向滚动 -->
+      <div class="category-scroll" id="categoryScroll">
+        <!-- 由JS动态生成 -->
+      </div>
+
+      <!-- 热点提示横幅 -->
+      <div class="hot-banner">
+        <span class="hot-banner-icon">&#128293;</span>
+        <div class="hot-banner-text">
+          <div class="title">今日热门速报</div>
+          <div class="desc">GPT-5正式发布引爆全球AI圈，15条热点持续更新中</div>
+        </div>
+      </div>
+
+      <!-- 新闻列表 -->
+      <div class="news-list" id="newsList">
+        <!-- 由JS动态生成 -->
+      </div>
+    </section>
+
+    <!-- ========== 趋势页 ========== -->
+    <section class="page" id="page-trend">
+      <!-- 趋势头部 -->
+      <div class="trend-hero">
+        <div class="date" id="trendDate">2026年6月29日</div>
+        <h2>AI趋势分析简报</h2>
+        <p class="summary">大模型能力突破天花板、AI芯片竞争白热化、AI应用走向深水区、全球AI监管框架成型、端侧AI全面爆发。</p>
+      </div>
+
+      <!-- 热度排行TOP5 -->
+      <div class="section-title">
+        <span class="icon">&#127942;</span>
+        热度排行榜
+      </div>
+      <div class="hot-rank-list" id="hotRankList">
+        <!-- 由JS动态生成 -->
+      </div>
+
+      <!-- 趋势分析 -->
+      <div class="section-title">
+        <span class="icon">&#128200;</span>
+        核心趋势洞察
+      </div>
+      <div class="trend-section" id="trendSection">
+        <!-- 由JS动态生成 -->
+      </div>
+
+      <!-- 热门分类可视化 -->
+      <div class="section-title">
+        <span class="icon">&#128202;</span>
+        领域热度分布
+      </div>
+      <div class="category-chart" id="categoryChart">
+        <!-- 由JS动态生成 -->
+      </div>
+    </section>
+
+    <!-- ========== 搜索页 ========== -->
+    <section class="page" id="page-search">
+      <!-- 搜索框 -->
+      <div class="search-header">
+        <div class="search-input-wrap">
+          <span class="icon">&#128269;</span>
+          <input
+            type="text"
+            class="search-input"
+            id="searchInput"
+            placeholder="搜索AI热点、关键词、标签..."
+            autocomplete="off"
+          >
+          <button class="search-clear" id="searchClear" aria-label="清除">&#10005;</button>
+        </div>
+      </div>
+
+      <!-- 搜索结果区域 -->
+      <div class="search-result-info hidden" id="searchResultInfo"></div>
+      <div class="news-list hidden" id="searchResults"></div>
+
+      <!-- 搜索历史 -->
+      <div class="search-history" id="searchHistorySection">
+        <div class="search-history-header">
+          <span class="label">搜索历史</span>
+          <button class="search-history-clear" id="clearHistory">清空</button>
+        </div>
+        <div class="search-history-list" id="searchHistoryList">
+          <!-- 由JS动态生成 -->
+        </div>
+      </div>
+
+      <!-- 热门搜索推荐 -->
+      <div class="search-suggestions" id="searchSuggestions">
+        <div class="label">热门搜索</div>
+        <div class="hot-keywords" id="hotKeywords">
+          <!-- 由JS动态生成 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 收藏页 ========== -->
+    <section class="page" id="page-fav">
+      <div class="fav-header">
+        <h2>我的收藏</h2>
+        <span class="fav-count" id="favCount">0</span>
+      </div>
+
+      <!-- 收藏列表 -->
+      <div class="news-list" id="favList">
+        <!-- 由JS动态生成 -->
+      </div>
+
+      <!-- 空状态 -->
+      <div class="fav-empty" id="favEmpty">
+        <div class="icon">&#9734;</div>
+        <div class="title">暂无收藏</div>
+        <div class="desc">浏览热点新闻时，点击星标即可收藏</div>
+        <button class="action" id="goBrowse">去逛逛</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== 底部导航栏 ==================== -->
+  <nav class="bottom-nav" id="bottomNav">
+    <div class="nav-item active" data-page="home">
+      <span class="nav-icon">&#127968;</span>
+      <span class="nav-label">首页</span>
+    </div>
+    <div class="nav-item" data-page="trend">
+      <span class="nav-icon">&#128200;</span>
+      <span class="nav-label">趋势</span>
+    </div>
+    <div class="nav-item" data-page="search">
+      <span class="nav-icon">&#128269;</span>
+      <span class="nav-label">搜索</span>
+    </div>
+    <div class="nav-item" data-page="fav">
+      <span class="nav-icon">&#9733;</span>
+      <span class="nav-label">收藏</span>
+    </div>
+  </nav>
+
+  <!-- ==================== 新闻详情弹窗 ==================== -->
+  <div class="modal-overlay" id="newsModal">
+    <div class="modal-sheet" id="modalSheet">
+      <div class="modal-handle">
+        <div class="modal-handle-bar"></div>
+      </div>
+      <div class="modal-header">
+        <h2 id="modalTitle"></h2>
+      </div>
+      <div class="modal-body">
+        <div class="detail-section">
+          <div class="label">新闻摘要</div>
+          <div class="detail-text" id="modalSummary"></div>
+        </div>
+        <div class="detail-section">
+          <div class="label">详细内容</div>
+          <div class="detail-text" id="modalDetail"></div>
+        </div>
+        <div class="detail-meta" id="modalMeta">
+          <!-- 由JS动态生成 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== Toast消息容器 ==================== -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ==================== 脚本引入 ==================== -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
