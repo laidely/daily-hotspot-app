@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="theme-color" content="#6c5ce7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="AI热点每日速递 - 面向科技从业者的AI新闻聚合与深度分析工具">
+<link rel="manifest" href="manifest.json">
+<title>AI热点每日速递</title>
+<style>
+/* ========== CSS Variables / Themes ========== */
+:root {
+  /* Dark theme (default) */
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #13131a;
+  --bg-card: #1a1a24;
+  --bg-card-hover: #22222e;
+  --bg-elevated: #252532;
+  --bg-input: #1e1e2a;
+  --bg-modal: #16161f;
+  --bg-overlay: rgba(0,0,0,0.7);
+  --text-primary: #f0f0f5;
+  --text-secondary: #a0a0b8;
+  --text-tertiary: #6a6a82;
+  --accent-primary: #6c5ce7;
+  --accent-secondary: #a29bfe;
+  --accent-gradient: linear-gradient(135deg, #6c5ce7, #a29bfe);
+  --accent-gradient-warm: linear-gradient(135deg, #fd79a8, #e17055);
+  --accent-gradient-cool: linear-gradient(135deg, #00b894, #00cec9);
+  --accent-gradient-blue: linear-gradient(135deg, #0984e3, #74b9ff);
+  --accent-gradient-orange: linear-gradient(135deg, #e17055, #fdcb6e);
+  --accent-gradient-purple: linear-gradient(135deg, #6c5ce7, #fd79a8);
+  --border-color: rgba(255,255,255,0.06);
+  --border-color-strong: rgba(255,255,255,0.12);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+  --shadow-glow: 0 0 20px rgba(108,92,231,0.3);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+  --tag-ai: #6c5ce7;
+  --tag-office: #00b894;
+  --tag-efficiency: #fdcb6e;
+  --tag-dev: #0984e3;
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s cubic-bezier(0.4,0,0.2,1);
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+[data-theme="light"] {
+  --bg-primary: #f5f5fa;
+  --bg-secondary: #eeeef5;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8f8ff;
+  --bg-elevated: #f0f0f8;
+  --bg-input: #f0f0f8;
+  --bg-modal: #ffffff;
+  --bg-overlay: rgba(0,0,0,0.5);
+  --text-primary: #1a1a2e;
+  --text-secondary: #5a5a72;
+  --text-tertiary: #8a8a9a;
+  --border-color: rgba(0,0,0,0.06);
+  --border-color-strong: rgba(0,0,0,0.12);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.15);
+  --shadow-glow: 0 0 20px rgba(108,92,231,0.15);
+}
+
+/* ========== Reset & Base ========== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px;-webkit-tap-highlight-color:transparent;scroll-behavior:smooth}
+body{
+  font-family:var(--font-sans);
+  background:var(--bg-primary);
+  color:var(--text-primary);
+  line-height:1.6;
+  overflow-x:hidden;
+  min-height:100vh;
+  padding-bottom:calc(70px + var(--safe-bottom));
+  transition:background var(--transition-normal),color var(--transition-normal);
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button{border:none;background:none;cursor:pointer;font-family:inherit;color:inherit}
+input,textarea{font-family:inherit}
+ul{list-style:none}
+
+/* ========== App Shell ========== */
+.app-header{
+  position:sticky;top:0;z-index:100;
+  background:var(--bg-secondary);
+  border-bottom:1px solid var(--border-color);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  padding:calc(var(--safe-top) + 8px) 16px 8px;
+  transition:background var(--transition-normal);
+}
+.header-top{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:10px;
+}
+.header-brand{
+  display:flex;align-items:center;gap:8px;
+}
+.brand-icon{
+  width:32px;height:32px;
+  background:var(--accent-gradient);
+  border-radius:var(--radius-sm);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:800;color:#fff;
+  box-shadow:var(--shadow-glow);
+}
+.brand-title{
+  font-size:18px;font-weight:700;
+  background:var(--accent-gradient);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.brand-date{
+  font-size:11px;color:var(--text-tertiary);font-weight:400;
+  margin-top:-2px;
+}
+.header-actions{display:flex;gap:6px}
+.icon-btn{
+  width:36px;height:36px;
+  border-radius:var(--radius-full);
+  background:var(--bg-card);
+  border:1px solid var(--border-color);
+  display:flex;align-items:center;justify-content:center;
+  transition:all var(--transition-fast);
+  font-size:16px;
+}
+.icon-btn:active{transform:scale(0.92);background:var(--bg-elevated)}
+.icon-btn svg{width:18px;height:18px;fill:var(--text-secondary)}
+
+/* Search bar */
+.search-bar{
+  position:relative;
+  margin-bottom:10px;
+}
+.search-bar input{
+  width:100%;
+  height:40px;
+  padding:0 16px 0 40px;
+  background:var(--bg-input);
+  border:1px solid var(--border-color);
+  border-radius:var(--radius-full);
+  color:var(--text-primary);
+  font-size:14px;
+  outline:none;
+  transition:all var(--transition-fast);
+}
+.search-bar input::placeholder{color:var(--text-tertiary)}
+.search-bar input:focus{
+  border-color:var(--accent-primary);
+  box-shadow:0 0 0 3px rgba(108,92,231,0.15);
+}
+.search-bar .search-icon{
+  position:absolute;left:13px;top:50%;transform:translateY(-50%);
+  width:16px;height:16px;fill:var(--text-tertiary);
+}
+.search-bar .search-clear{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  width:24px;height:24px;
+  border-radius:var(--radius-full);
+  background:var(--bg-elevated);
+  display:none;align-items:center;justify-content:center;
+  font-size:12px;color:var(--text-tertiary);
+}
+.search-bar .search-clear.visible{display:flex}
+
+/* Category tabs */
+.category-tabs{
+  display:flex;gap:8px;
+  overflow-x:auto;
+  padding-bottom:4px;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+.category-tabs::-webkit-scrollbar{display:none}
+.category-tab{
+  flex-shrink:0;
+  padding:6px 16px;
+  border-radius:var(--radius-full);
+  font-size:13px;font-weight:500;
+  color:var(--text-secondary);
+  background:var(--bg-card);
+  border:1px solid var(--border-color);
+  transition:all var(--transition-fast);
+  white-space:nowrap;
+}
+.category-tab:active{transform:scale(0.95)}
+.category-tab.active{
+  color:#fff;
+  background:var(--accent-gradient);
+  border-color:transparent;
+  box-shadow:var(--shadow-glow);
+}
+
+/* ========== Content ========== */
+.app-content{
+  padding:12px 16px;
+  max-width:480px;
+  margin:0 auto;
+}
+.section-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin:20px 0 12px;
+}
+.section-title{
+  font-size:16px;font-weight:700;
+  display:flex;align-items:center;gap:6px;
+}
+.section-title .dot{
+  width:6px;height:6px;
+  border-radius:var(--radius-full);
+  background:var(--accent-primary);
+  box-shadow:0 0 8px var(--accent-primary);
+}
+.section-action{
+  font-size:12px;color:var(--accent-secondary);font-weight:500;
+}
+
+/* ========== News Card ========== */
+.news-card{
+  background:var(--bg-card);
+  border-radius:var(--radius-lg);
+  border:1px solid var(--border-color);
+  overflow:hidden;
+  margin-bottom:14px;
+  transition:all var(--transition-normal);
+  animation:cardFadeIn 0.4s ease forwards;
+  opacity:0;
+  transform:translateY(12px);
+}
+.news-card:active{transform:scale(0.985)}
+.news-card.hidden{display:none}
+@keyframes cardFadeIn{
+  to{opacity:1;transform:translateY(0)}
+}
+
+.card-gradient-bar{
+  height:3px;
+  background:var(--accent-gradient);
+}
+.card-gradient-bar.cat-office{background:var(--accent-gradient-cool)}
+.card-gradient-bar.cat-efficiency{background:var(--accent-gradient-orange)}
+.card-gradient-bar.cat-dev{background:var(--accent-gradient-blue)}
+
+.card-body{padding:14px 16px}
+.card-meta{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:8px;
+}
+.card-tag{
+  font-size:10px;font-weight:600;
+  padding:2px 8px;
+  border-radius:var(--radius-full);
+  color:#fff;
+}
+.card-tag.tag-ai{background:var(--tag-ai)}
+.card-tag.tag-office{background:var(--tag-office)}
+.card-tag.tag-efficiency{background:var(--tag-efficiency);color:#333}
+.card-tag.tag-dev{background:var(--tag-dev)}
+.card-source{font-size:11px;color:var(--text-tertiary)}
+.card-time{font-size:11px;color:var(--text-tertiary);margin-left:auto}
+
+.card-title{
+  font-size:15px;font-weight:700;line-height:1.45;
+  margin-bottom:8px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.card-summary{
+  font-size:13px;color:var(--text-secondary);line-height:1.55;
+  margin-bottom:10px;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+
+.card-image-wrapper{
+  position:relative;
+  margin:0 -16px;
+  height:0;
+  overflow:hidden;
+  border-radius:var(--radius-md);
+  transition:height var(--transition-slow);
+}
+.card-image-wrapper img{
+  width:100%;height:180px;
+  object-fit:cover;
+  opacity:0.9;
+}
+.card-image-placeholder{
+  width:100%;height:180px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:48px;
+  background:var(--bg-elevated);
+}
+
+.card-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:10px;
+  padding-top:10px;
+  border-top:1px solid var(--border-color);
+}
+.card-stats{
+  display:flex;gap:14px;
+}
+.card-stat{
+  font-size:11px;color:var(--text-tertiary);
+  display:flex;align-items:center;gap:3px;
+}
+.card-stat svg{width:13px;height:13px;fill:var(--text-tertiary)}
+.card-bookmark{
+  width:32px;height:32px;
+  border-radius:var(--radius-full);
+  display:flex;align-items:center;justify-content:center;
+  transition:all var(--transition-fast);
+}
+.card-bookmark svg{width:18px;height:18px;fill:var(--text-tertiary);transition:all var(--transition-fast)}
+.card-bookmark.bookmarked svg{fill:var(--accent-primary)}
+.card-bookmark:active{transform:scale(0.85)}
+
+/* ========== Hot badge ========== */
+.hot-badge{
+  display:inline-flex;align-items:center;gap:3px;
+  font-size:10px;font-weight:600;
+  color:#fd79a8;
+}
+.hot-badge::before{
+  content:'';display:block;
+  width:6px;height:6px;
+  border-radius:var(--radius-full);
+  background:#fd79a8;
+  animation:pulse 1.5s infinite;
+}
+@keyframes pulse{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:0.5;transform:scale(1.3)}
+}
+
+/* ========== Detail Page (slide-up panel) ========== */
+.detail-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:var(--bg-overlay);
+  opacity:0;pointer-events:none;
+  transition:opacity var(--transition-normal);
+}
+.detail-overlay.active{opacity:1;pointer-events:auto}
+
+.detail-panel{
+  position:fixed;left:0;right:0;bottom:0;z-index:210;
+  max-height:92vh;
+  background:var(--bg-modal);
+  border-radius:var(--radius-xl) var(--radius-xl) 0 0;
+  transform:translateY(100%);
+  transition:transform var(--transition-slow);
+  overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.detail-panel.active{transform:translateY(0)}
+.detail-panel .panel-handle{
+  width:36px;height:4px;
+  background:var(--border-color-strong);
+  border-radius:var(--radius-full);
+  margin:10px auto 0;
+  flex-shrink:0;
+}
+.detail-scroll{
+  overflow-y:auto;
+  flex:1;
+  overscroll-behavior:contain;
+  padding:12px 20px calc(24px + var(--safe-bottom));
+}
+.detail-scroll::-webkit-scrollbar{width:0}
+
+.detail-tag-row{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:10px;
+}
+.detail-title{
+  font-size:20px;font-weight:800;line-height:1.4;
+  margin-bottom:12px;
+}
+.detail-meta-row{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  font-size:12px;color:var(--text-tertiary);
+  margin-bottom:16px;
+  padding-bottom:14px;
+  border-bottom:1px solid var(--border-color);
+}
+.detail-image{
+  width:100%;height:200px;
+  border-radius:var(--radius-md);
+  overflow:hidden;margin-bottom:16px;
+  background:var(--bg-elevated);
+  display:flex;align-items:center;justify-content:center;
+  font-size:60px;
+}
+.detail-content{
+  font-size:14px;line-height:1.75;
+  color:var(--text-secondary);
+  margin-bottom:20px;
+}
+.detail-content p{margin-bottom:12px}
+.detail-analysis{
+  background:var(--bg-elevated);
+  border-radius:var(--radius-md);
+  padding:16px;
+  margin-bottom:20px;
+  border-left:3px solid var(--accent-primary);
+}
+.detail-analysis h3{
+  font-size:14px;font-weight:700;color:var(--accent-secondary);
+  margin-bottom:8px;
+  display:flex;align-items:center;gap:6px;
+}
+.detail-analysis p{
+  font-size:13px;line-height:1.7;color:var(--text-secondary);
+}
+
+/* Detail actions */
+.detail-actions{
+  display:flex;gap:10px;
+  margin-bottom:20px;
+}
+.detail-action-btn{
+  flex:1;height:42px;
+  border-radius:var(--radius-full);
+  font-size:13px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:all var(--transition-fast);
+  border:1px solid var(--border-color);
+  background:var(--bg-card);
+}
+.detail-action-btn:active{transform:scale(0.96)}
+.detail-action-btn.primary{
+  background:var(--accent-gradient);color:#fff;border-color:transparent;
+  box-shadow:var(--shadow-glow);
+}
+.detail-action-btn svg{width:16px;height:16px}
+
+/* Related news */
+.related-section{margin-top:8px}
+.related-card{
+  display:flex;gap:12px;
+  padding:12px;
+  background:var(--bg-card);
+  border-radius:var(--radius-md);
+  border:1px solid var(--border-color);
+  margin-bottom:10px;
+  transition:all var(--transition-fast);
+}
+.related-card:active{background:var(--bg-card-hover)}
+.related-thumb{
+  width:72px;height:54px;
+  border-radius:var(--radius-sm);
+  background:var(--bg-elevated);
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;overflow:hidden;
+}
+.related-info{flex:1;min-width:0}
+.related-title{
+  font-size:13px;font-weight:600;line-height:1.4;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  margin-bottom:4px;
+}
+.related-meta{font-size:11px;color:var(--text-tertiary)}
+
+/* ========== Bottom Nav ========== */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  background:var(--bg-secondary);
+  border-top:1px solid var(--border-color);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  padding-bottom:var(--safe-bottom);
+  transition:background var(--transition-normal);
+}
+.nav-items{
+  display:flex;
+  max-width:480px;
+  margin:0 auto;
+}
+.nav-item{
+  flex:1;
+  display:flex;flex-direction:column;align-items:center;
+  padding:8px 0 6px;
+  gap:3px;
+  transition:all var(--transition-fast);
+}
+.nav-item svg{
+  width:22px;height:22px;fill:var(--text-tertiary);
+  transition:all var(--transition-fast);
+}
+.nav-item span{font-size:10px;color:var(--text-tertiary);font-weight:500;transition:color var(--transition-fast)}
+.nav-item.active svg{fill:var(--accent-primary)}
+.nav-item.active span{color:var(--accent-primary)}
+.nav-item:active{opacity:0.7}
+
+/* ========== Favorites Page ========== */
+.page{display:none}
+.page.active{display:block}
+.page-header-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px;
+  margin-bottom:8px;
+}
+.page-header-bar h2{font-size:20px;font-weight:700}
+.page-header-bar .back-btn{
+  width:36px;height:36px;
+  border-radius:var(--radius-full);
+  background:var(--bg-card);
+  border:1px solid var(--border-color);
+  display:flex;align-items:center;justify-content:center;
+}
+.page-header-bar .back-btn svg{width:18px;height:18px;fill:var(--text-secondary)}
+
+/* Tags management */
+.tags-section{padding:16px}
+.tags-section h3{font-size:14px;font-weight:600;margin-bottom:10px;color:var(--text-secondary)}
+.tags-cloud{display:flex;flex-wrap:wrap;gap:8px}
+.user-tag{
+  padding:6px 14px;
+  border-radius:var(--radius-full);
+  font-size:12px;font-weight:500;
+  background:var(--bg-card);
+  border:1px solid var(--border-color-strong);
+  color:var(--text-secondary);
+  transition:all var(--transition-fast);
+  display:flex;align-items:center;gap:4px;
+}
+.user-tag .remove-tag{
+  width:16px;height:16px;
+  border-radius:var(--radius-full);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;line-height:1;
+  color:var(--text-tertiary);
+}
+.user-tag:active{transform:scale(0.93)}
+
+.empty-state{
+  text-align:center;padding:60px 20px;
+  color:var(--text-tertiary);
+}
+.empty-state .empty-icon{font-size:48px;margin-bottom:12px;opacity:0.5}
+.empty-state p{font-size:14px;line-height:1.6}
+
+/* ========== Loading shimmer ========== */
+.shimmer{
+  background:linear-gradient(90deg,var(--bg-card) 25%,var(--bg-elevated) 50%,var(--bg-card) 75%);
+  background-size:200% 100%;
+  animation:shimmer 1.5s infinite;
+}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ========== Scroll to top ========== */
+.scroll-top-btn{
+  position:fixed;bottom:calc(80px + var(--safe-bottom));right:20px;z-index:90;
+  width:42px;height:42px;
+  border-radius:var(--radius-full);
+  background:var(--accent-gradient);
+  color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow-glow),var(--shadow-md);
+  opacity:0;transform:scale(0.5);
+  transition:all var(--transition-normal);
+  pointer-events:none;
+}
+.scroll-top-btn.visible{opacity:1;transform:scale(1);pointer-events:auto}
+.scroll-top-btn:active{transform:scale(0.85)}
+.scroll-top-btn svg{width:20px;height:20px;fill:#fff}
+
+/* ========== Lazy load fade ========== */
+.lazy-img{
+  opacity:0;transition:opacity 0.4s ease;
+}
+.lazy-img.loaded{opacity:1}
+
+/* ========== Custom tag colors ========== */
+.tag-color-0{background:#6c5ce7}
+.tag-color-1{background:#00b894}
+.tag-color-2{background:#e17055}
+.tag-color-3{background:#0984e3}
+.tag-color-4{background:#fd79a8}
+.tag-color-5{background:#fdcb6e;color:#333}
+
+/* ========== Trending section ========== */
+.trending-card{
+  background:var(--bg-card);
+  border-radius:var(--radius-md);
+  border:1px solid var(--border-color);
+  padding:14px 16px;
+  margin-bottom:10px;
+  display:flex;align-items:center;gap:12px;
+  transition:all var(--transition-fast);
+}
+.trending-card:active{background:var(--bg-card-hover)}
+.trending-rank{
+  width:28px;height:28px;
+  border-radius:var(--radius-sm);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;color:#fff;
+  flex-shrink:0;
+}
+.trending-rank.r1{background:linear-gradient(135deg,#e17055,#fd79a8)}
+.trending-rank.r2{background:linear-gradient(135deg,#fdcb6e,#e17055)}
+.trending-rank.r3{background:linear-gradient(135deg,#0984e3,#6c5ce7)}
+.trending-rank.r4,.trending-rank.r5,.trending-rank.r6{background:var(--bg-elevated);color:var(--text-tertiary)}
+.trending-info{flex:1;min-width:0}
+.trending-title{font-size:13px;font-weight:600;line-height:1.4;margin-bottom:2px}
+.trending-heat{font-size:11px;color:var(--text-tertiary)}
+
+/* ========== Responsive ========== */
+@media(min-width:428px){
+  .app-content{padding:16px 20px}
+  .news-card{border-radius:var(--radius-xl)}
+  .detail-scroll{padding:16px 28px calc(28px + var(--safe-bottom))}
+}
+
+/* ========== Animations ========== */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:0.01ms!important;
+    transition-duration:0.01ms!important;
+  }
+}
+.fade-enter{animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.slide-up{animation:slideUp 0.4s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* Loading spinner */
+.spinner{
+  width:32px;height:32px;
+  border:3px solid var(--border-color);
+  border-top-color:var(--accent-primary);
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+  margin:40px auto;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="app-header">
+  <div class="header-top">
+    <div class="header-brand">
+      <div class="brand-icon">AI</div>
+      <div>
+        <div class="brand-title">AI热点每日速递</div>
+        <div class="brand-date" id="todayDate"></div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="themeToggle" aria-label="切换主题">
+        <svg id="themeIcon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="search-bar">
+    <svg class="search-icon" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input type="text" id="searchInput" placeholder="搜索AI新闻、技术关键词..." autocomplete="off">
+    <button class="search-clear" id="searchClear">&times;</button>
+  </div>
+  <div class="category-tabs" id="categoryTabs">
+    <button class="category-tab active" data-cat="all">全部</button>
+    <button class="category-tab" data-cat="ai">AI技术</button>
+    <button class="category-tab" data-cat="office">办公自动化</button>
+    <button class="category-tab" data-cat="efficiency">效率工具</button>
+    <button class="category-tab" data-cat="dev">开发者趋势</button>
+  </div>
+</header>
+
+<!-- ===== MAIN PAGE ===== -->
+<main class="page active" id="mainPage">
+  <div class="app-content">
+    <!-- Trending Section -->
+    <div class="section-header">
+      <div class="section-title"><span class="dot"></span>今日热榜</div>
+    </div>
+    <div id="trendingList"></div>
+
+    <!-- News Feed -->
+    <div class="section-header">
+      <div class="section-title"><span class="dot"></span>全部新闻</div>
+      <span class="section-action" id="newsCount"></span>
+    </div>
+    <div id="newsList"></div>
+    <div id="loadMore" style="text-align:center;padding:20px;display:none">
+      <div class="spinner"></div>
+    </div>
+  </div>
+</main>
+
+<!-- ===== FAVORITES PAGE ===== -->
+<div class="page" id="favPage">
+  <div class="app-content">
+    <div class="page-header-bar">
+      <h2>我的收藏</h2>
+      <button class="icon-btn" id="favBackBtn" aria-label="返回">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5m0 0l7 7m-7-7l7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div id="favNewsList"></div>
+    <div class="tags-section" id="tagsSection">
+      <h3>自定义标签</h3>
+      <div class="tags-cloud" id="tagsCloud"></div>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <input type="text" id="newTagInput" placeholder="添加自定义标签..." style="flex:1;height:36px;padding:0 12px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-full);color:var(--text-primary);font-size:13px;outline:none">
+        <button id="addTagBtn" class="detail-action-btn primary" style="flex:none;width:60px;height:36px;border-radius:var(--radius-full);font-size:12px">添加</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DETAIL PANEL ===== -->
+<div class="detail-overlay" id="detailOverlay"></div>
+<div class="detail-panel" id="detailPanel">
+  <div class="panel-handle"></div>
+  <div class="detail-scroll" id="detailScroll"></div>
+</div>
+
+<!-- ===== SCROLL TO TOP ===== -->
+<button class="scroll-top-btn" id="scrollTopBtn" aria-label="回到顶部">
+  <svg viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<!-- ===== BOTTOM NAV ===== -->
+<nav class="bottom-nav">
+  <div class="nav-items">
+    <button class="nav-item active" data-page="main">
+      <svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>首页</span>
+    </button>
+    <button class="nav-item" data-page="discover">
+      <svg viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span>发现</span>
+    </button>
+    <button class="nav-item" data-page="fav">
+      <svg viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>收藏</span>
+    </button>
+  </div>
+</nav>
+
+<script>
+// ========== NEWS DATA ==========
+const newsData = [
+  {
+    id: 1,
+    title: "英伟达联合剑桥发布\"红皇后哥德尔机\"，AI首次实现自我进化",
+    summary: "英伟达与剑桥大学联合论文提出让AI自主写代码、自我测试、淘汰劣质版本并持续繁殖优化，引发超级智能热议。",
+    category: "ai",
+    tag: "AI技术",
+    source: "科技日报",
+    time: "2小时前",
+    emoji: "🧬",
+    hot: true,
+    views: "58.3万",
+    comments: "4,218",
+    analysis: "这篇论文标志着AI从\"被动执行\"到\"主动进化\"的范式转移。红皇后哥德尔机（Red Queen Godel Machine）的核心在于让AI系统能够像生物进化一样，自主修改自身代码、评估改进效果并迭代优化。\n\n技术层面，该方法结合了哥德尔的完备性定理与进化算法，通过自指（self-reference）机制让AI理解并改进自身。这意味着AI不再需要人类预先设定所有规则，而是可以根据环境反馈自主适应。\n\n产业影响：若该方案可规模化落地，将彻底改变AI模型的训练方式，大幅降低对人工标注和架构设计的依赖。同时，AI安全社区对此表达了严重关切——当AI能自主修改自身代码时，对齐问题将变得前所未有的复杂。\n\n投资视角：该方向可能催生全新的\"AI进化基础设施\"赛道，从自适应算力调度到进化过程监控，相关创业机会正在涌现。"
+  },
+  {
+    id: 2,
+    title: "软银向OpenAI豪掷100亿美元，AI\"军备竞赛\"再升级",
+    summary: "软银集团正式宣布向OpenAI投资100亿美元，为2026年迄今全球AI领域最大单笔融资，主要用于下一代大模型训练和AI Agent研发。",
+    category: "ai",
+    tag: "AI技术",
+    source: "新浪科技",
+    time: "3小时前",
+    emoji: "💰",
+    hot: true,
+    views: "42.7万",
+    comments: "3,156",
+    analysis: "这笔100亿美元的投资是AI领域史上最大单笔融资之一，软银CEO孙正义声称AGI实现速度\"远超预期\"。资金将投向三大方向：下一代大模型训练（预计参数规模突破10万亿）、算力基础设施扩建（计划部署50万块H200级别GPU）、企业级AI Agent产品研发。\n\n竞争格局分析：这笔投资将使OpenAI估值突破3000亿美元，进一步拉开与Anthropic（估值约600亿）、Google DeepMind等竞争对手的差距。值得注意的是，Anthropic凭借Claude系列已实现年化收入470亿美元，在商业化层面反而领先OpenAI。\n\n行业隐忧：如此规模的资本集中可能加剧AI人才的\"虹吸效应\"，中小AI公司面临更严峻的人才和算力竞争。同时，监管机构已开始关注超大规模AI投资对市场竞争的影响。"
+  },
+  {
+    id: 3,
+    title: "Anthropic发布Claude Science：第一条可审计的AI科研流水线",
+    summary: "Anthropic推出Claude Science平台，将AI科研能力升级为文献检索→实验设计→数据分析→论文撰写的完整可审计流水线，科研效率提升约10倍。",
+    category: "efficiency",
+    tag: "效率工具",
+    source: "36氪",
+    time: "4小时前",
+    emoji: "🔬",
+    hot: true,
+    views: "35.2万",
+    comments: "2,891",
+    analysis: "Claude Science代表了AI从\"聊天助手\"到\"科研基础设施\"的关键跃迁。其创新之处在于将AI科研过程标准化为可审计的流水线：每个环节都有明确的输入输出、质量检查点和人类介入接口。\n\n核心能力拆解：1）文献检索模块可自动从arXiv、PubMed等数据库聚合相关论文，生成结构化综述；2）实验设计模块能基于文献分析提出假设和实验方案；3）数据分析模块支持代码生成、统计检验和结果可视化；4）论文撰写模块可按目标期刊格式输出初稿。\n\n应用前景：在药物分子筛选、材料科学、基因组学等计算密集型领域，该平台已展示出显著的效率提升。但学界对其\"原创性\"仍有争议——AI更擅长快速执行已知范式，而非提出真正的科学突破。"
+  },
+  {
+    id: 4,
+    title: "Karpathy推翻RAG：用\"活Wiki\"重新定义个人知识管理",
+    summary: "前OpenAI创始成员Andrej Karpathy发布全新理念，让大模型将笔记\"编译\"成持续生长的活Wiki，项目上线两月获5000+ GitHub Star。",
+    category: "dev",
+    tag: "开发者趋势",
+    source: "36氪",
+    time: "5小时前",
+    emoji: "🧠",
+    hot: true,
+    views: "29.8万",
+    comments: "2,437",
+    analysis: "Karpathy这一理念直指当前RAG（检索增强生成）方案的核心缺陷：检索是\"静态的\"，知识无法自主生长。他的方案将知识管理从\"检索\"升级为\"编译\"——大模型读取用户的笔记、文档后，生成一个结构化、可关联、持续进化的知识图谱。\n\n技术架构：该项目将自然语言笔记编译为类似编程语言中的抽象语法树（AST），支持版本控制、依赖分析和增量更新。这意味着当新信息输入时，系统能自动更新相关知识点，无需重新处理全部数据。\n\n开发者生态：该项目开源后在GitHub迅速走红，已被多个二次开发项目fork。其核心理念\"知识应像代码一样可复利增长\"正在影响下一代知识管理工具的设计方向。"
+  },
+  {
+    id: 5,
+    title: "Claude Code被曝内置隐秘检测机制，识别中国用户时区引众怒",
+    summary: "Anthropic旗下AI编程工具Claude Code被开发者曝光可识别用户时区与代理身份，疑似针对中国用户实施功能限制，引发信任危机。",
+    category: "dev",
+    tag: "开发者趋势",
+    source: "快科技",
+    time: "6小时前",
+    emoji: "⚠️",
+    hot: true,
+    views: "51.6万",
+    comments: "6,832",
+    analysis: "此次事件暴露了AI工具在全球化部署中的合规困境。Claude Code被发现的隐秘检测机制包括：读取系统时区判断用户地理位置、检测网络代理特征、据此动态调整功能可用性。虽然Anthropic声称\"初衷是合规风控\"，但未事先公开透明告知用户，严重损害了开发者信任。\n\n深层影响：这并非孤例。OpenAI的ChatGPT、Google的Gemini均在不同地区实施了差异化功能策略。核心矛盾在于：AI公司需要遵守各国监管要求，但用户期待的是统一的、透明的服务体验。\n\n对开发者的启示：事件后，大量中国开发者开始评估国产AI编程工具（如通义灵码、CodeGeeX等），可能导致AI开发工具市场的区域化分化。同时也推动了\"本地化部署\"需求的增长。"
+  },
+  {
+    id: 6,
+    title: "WAIC 2026上海开幕：1100家企业参展，超300款AI产品全球首发",
+    summary: "2026世界人工智能大会在上海世博展览馆举办，展览面积突破10万平方米，\"智能伙伴，共创未来\"为主题，规模创历届之最。",
+    category: "ai",
+    tag: "AI技术",
+    source: "综合报道",
+    time: "8小时前",
+    emoji: "🎉",
+    hot: false,
+    views: "26.4万",
+    comments: "1,587",
+    analysis: "WAIC 2026是观察中国AI产业全景的最佳窗口。本届大会的核心信号：AI正从\"技术热点\"迈向\"商业基础设施\"。企业关注的焦点已从\"是否拥抱AI\"转向\"如何实现AI价值\"。\n\n亮点产品：1）多家厂商发布了面向B端的AI Agent平台，支持企业定制专属AI员工；2）具身智能机器人在工业场景的落地案例显著增多；3）AI+医疗、AI+教育等垂直领域解决方案趋于成熟。\n\n首次推出的WAIC Academic学术会议，标志着中国AI研究正在走向更系统化的国际学术交流。140余场论坛中，\"AI Agent商业化\"和\"AI安全与治理\"是最受关注的话题。"
+  },
+  {
+    id: 7,
+    title: "国内首个机器人学校开学：30台人形机器人接受职业技能培训",
+    summary: "国内首个面向机器人的职业技能培训学校正式开学，首批30台人形机器人入学接受装配、物流、巡检等工业技能的系统化训练。",
+    category: "office",
+    tag: "办公自动化",
+    source: "IT之家",
+    time: "10小时前",
+    emoji: "🤖",
+    hot: false,
+    views: "22.1万",
+    comments: "1,295",
+    analysis: "这所学校标志着机器人产业从\"能走\"到\"能干\"的关键转折。培训体系的核心在于建立标准化的机器人能力评测基准，类似于人类的职业资格认证。\n\n训练内容涵盖：1）精密装配——要求机器人手眼协调精度达到0.1mm级别；2）仓储物流——在动态环境中完成拣选、搬运和路径规划；3）工厂巡检——通过多模态感知识别设备异常。\n\n产业意义：此举将加速机器人在制造业、物流业的规模化部署。预计到2027年底，通过该体系认证的\"持证上岗\"机器人将超过500台，推动工业自动化进入新阶段。"
+  },
+  {
+    id: 8,
+    title: "谷歌一周连失四位AI大咖：Transformer之父与诺奖得主相继出走",
+    summary: "谷歌AI部门遭遇大规模人才流失，Transformer论文作者、诺贝尔化学奖得主等四位核心人物一周内相继离职，AI战略分歧浮出水面。",
+    category: "ai",
+    tag: "AI技术",
+    source: "36氪",
+    time: "12小时前",
+    emoji: "🏢",
+    hot: false,
+    views: "31.5万",
+    comments: "2,684",
+    analysis: "谷歌AI实验室的人才流失并非偶然，而是深层战略矛盾的集中爆发。一周内离职的四位核心人物分别代表了Transformer架构、计算化学（诺贝尔奖成果）、预训练技术和推理优化等关键领域。\n\n流失原因分析：1）研究自由度受限——越来越多研究者被要求将精力转向产品化，而非基础研究；2）组织架构频繁调整——DeepMind与Google Brain合并后的整合问题持续；3）外部机会诱惑——OpenAI、Anthropic等独立AI实验室提供更纯粹的研究环境和更丰厚的薪酬。\n\n市场反应：谷歌股价一周内下跌约8%，市值蒸发超千亿美元。即将发布的Gemini Spark新品被市场视为谷歌挽回AI领导力的关键战役。"
+  },
+  {
+    id: 9,
+    title: "Meta筹建云服务业务：将闲置AI算力打包对外出售",
+    summary: "据外媒报道，Meta正筹建独立云计算部门，计划将内部空闲的AI训练集群和Llama系列开源大模型打包为云服务出售，直接与AWS、Azure竞争。",
+    category: "office",
+    tag: "办公自动化",
+    source: "IT之家",
+    time: "14小时前",
+    emoji: "☁️",
+    hot: false,
+    views: "18.6万",
+    comments: "1,024",
+    analysis: "Meta入局云计算是2026年基础设施市场最具冲击力的事件之一。凭借Llama开源生态的广泛装机基础（全球超过100万企业用户），Meta有望快速切入企业AI市场。\n\n商业模式创新：与AWS、Azure按算力出租不同，Meta的方案更倾向于\"模型+算力\"一体化交付。企业无需自行部署和调优模型，直接调用Meta预训练好的Llama实例即可。\n\n市场冲击：此举可能重塑云计算市场的竞争格局。当前AWS、Azure、GCP三强格局中，Meta凭借其社交平台积累的超大规模AI基础设施（全球超过50万块GPU）和开源生态优势，有望成为强有力的第四极。"
+  },
+  {
+    id: 10,
+    title: "AIGC合规全面升级：7月两大新规落地，情感AI服务纳入监管",
+    summary: "《网络安全标识管理办法》和《人工智能拟人化互动服务管理暂行办法》7月相继施行，AIGC行业正式进入精细化强监管时代。",
+    category: "ai",
+    tag: "AI技术",
+    source: "综合报道",
+    time: "16小时前",
+    emoji: "📜",
+    hot: false,
+    views: "24.3万",
+    comments: "1,856",
+    analysis: "7月施行的两项新规构成了中国AIGC监管的完整框架：底层产品安全（网络安全标识）、大模型生成（既有办法）和拟人化情感交互（拟人化互动办法）三管齐下。\n\n关键变化：1）AI产品安全分级标识（一至三星）将成为市场准入门槛；2）AI虚拟陪伴、情感对话服务被纳入专项监管，强制AI身份显性标识、防沉迷和未成年人保护；3）监管从\"事后处罚\"转向\"全生命周期前置管控\"。\n\n企业应对：所有布局AIGC、拟人AI、数字人服务的企业，必须在7月内完成技术改造、数据合规、备案评估和制度建设。未达标产品将面临下架风险，但合规完善的企业将在政企采购等高价值赛道中获得先发优势。"
+  },
+  {
+    id: 11,
+    title: "高通解码AI原生6G：从\"传输比特\"到\"支撑词元\"的范式跃迁",
+    summary: "高通在MWC26上海展会上提出AI原生6G概念，未来基站将兼具分布式AI推理节点功能，为智能体经济提供底层基础设施。",
+    category: "dev",
+    tag: "开发者趋势",
+    source: "C114通信网",
+    time: "18小时前",
+    emoji: "📡",
+    hot: false,
+    views: "15.2万",
+    comments: "876",
+    analysis: "高通提出的\"AI原生6G\"概念，代表了通信行业对AI时代的系统性回应。核心理念是：未来的6G网络不仅是数据传输管道，更是AI算力的分布式载体。\n\n技术架构：每个6G基站将集成AI推理芯片，可就近处理Token生成、语义理解和模型推理任务。这将大幅降低AI应用的延迟——端侧AI请求无需往返云端，由最近的基站直接响应。\n\n产业影响：1）电信运营商将转型为\"AI算力服务商\"；2）边缘AI芯片需求将爆发式增长；3）智能体之间的实时通信将获得基础设施级支撑，催生\"智能体经济\"新范式。预计AI原生6G标准将于2028年冻结，2030年开始商用部署。"
+  },
+  {
+    id: 12,
+    title: "日月光先进封装报价最高涨超20%，AI芯片成本压力加剧",
+    summary: "全球最大封测企业日月光大幅上调CoWoS、扇出型封装等AI芯片关键工艺报价，涨价压力从晶圆传导至封测端，下半年AI服务器成本将持续攀升。",
+    category: "ai",
+    tag: "AI技术",
+    source: "IT之家",
+    time: "20小时前",
+    emoji: "📦",
+    hot: false,
+    views: "13.8万",
+    comments: "743",
+    analysis: "先进封装涨价是AI算力供需失衡的又一信号。CoWoS（Chip on Wafer on Substrate）是英伟达H100/B200等AI芯片的核心封装技术，其产能直接决定了AI芯片的出货量。\n\n涨价逻辑：台积电CoWoS产能虽已多次扩产，但需求增长更为迅猛。日月光作为封测环节的重要供应商，其涨价反映了整个产业链的产能瓶颈正在向下游传导。\n\n连锁反应：先进封装成本上涨→AI芯片价格上涨→AI服务器成本攀升→云计算服务费提价。这一链条最终将传导至每一位使用AI服务的终端用户和开发者。部分企业已开始探索Chiplet等替代封装方案以降低成本。"
+  },
+  {
+    id: 13,
+    title: "北航团队首创智能变刚度关节技术，获近亿元天使轮融资",
+    summary: "北京航空航天大学机器人研究所孵化团队研发全球首创智能变刚度关节，机器人关节可在刚性支撑与柔性缓冲间无缝切换，同步推出智能膝关节外骨骼产品。",
+    category: "office",
+    tag: "办公自动化",
+    source: "36氪",
+    time: "1天前",
+    emoji: "⚙️",
+    hot: false,
+    views: "11.4万",
+    comments: "612",
+    analysis: "智能变刚度关节是机器人技术的\"圣杯\"之一。传统机器人关节要么偏刚性（适合精密操作但安全性差），要么偏柔性（安全性好但精度低），而北航团队的技术实现了两者之间的动态切换。\n\n核心技术：该关节采用新型磁流变弹性体与电磁控制系统的组合，可在毫秒级时间内调节关节刚度。在精密装配时保持高刚性确保精度，在与人交互时切换为柔性确保安全。\n\n商业化路径：团队首先切入康复医疗领域（智能膝关节外骨骼），海外众筹已获700万元订单。未来计划向工业协作机器人、服务机器人领域拓展。近亿元天使轮融资将用于量产产线建设。"
+  },
+  {
+    id: 14,
+    title: "MLCC供应告急：AI服务器用量达传统5-8倍，逼近物理极限",
+    summary: "日本太阳诱电发出警告，AI服务器单机MLCC用量是传统服务器的5-8倍，高端MLCC产能已逼近物理极限，可能成为算力链新卡脖子环节。",
+    category: "ai",
+    tag: "AI技术",
+    source: "快科技",
+    time: "1天前",
+    emoji: "🔌",
+    hot: false,
+    views: "9.7万",
+    comments: "534",
+    analysis: "MLCC（多层陶瓷电容器）是电子设备的\"基础零部件\"，被誉为\"电子工业的大米\"。在AI服务器中，每个GPU需要数千颗MLCC用于电源滤波和信号耦合。\n\n供需失衡：AI服务器单机MLCC用量从传统服务器的约1万颗暴增至5-8万颗，而高端MLCC（超小尺寸、高耐压、低ESR）的制造精度已接近材料物理极限——介质层厚度降至亚微米级别，良率提升极为困难。\n\n投资机会：MLCC涨价周期可能持续至2027年。国内MLCC厂商（如风华高科、三环集团）正在加速高端产品突破，国产替代空间巨大。同时，新型电容技术（如导电聚合物电容、硅电容）也可能借此窗口加速渗透。"
+  },
+  {
+    id: 15,
+    title: "无人机与eVTOL全面纳入适航监管，低空经济进入规范化时代",
+    summary: "2026年7月1日起，新修订的民航法规将民用无人机和eVTOL纳入与有人机同级别适航管理体系，0-120米开放空域无需逐次审批。",
+    category: "efficiency",
+    tag: "效率工具",
+    source: "综合报道",
+    time: "1天前",
+    emoji: "🚁",
+    hot: false,
+    views: "14.5万",
+    comments: "891",
+    analysis: "新规的出台标志着中国低空经济从\"野蛮生长\"进入\"规范化发展\"阶段。核心变化包括：1）适航审定标准与有人机对齐，安全性要求大幅提升；2）0-120米空域开放但需电子围栏管理，不再逐次审批；3）eVTOL（飞行汽车）获得明确的法规路径。\n\n产业影响：规范化将加速低空经济的商业化进程。物流无人机、空中出租车、农业植保等场景将率先受益。预计到2027年，中国低空经济规模将突破5000亿元。\n\n对AI的交叉影响：低空经济与AI高度融合——自主飞行决策、空中交通管理、视觉感知避障等AI技术将成为低空飞行器的核心能力。新规同时推动了AI在航空安全领域的标准化进程。"
+  },
+  {
+    id: 16,
+    title: "moody前高管联合大疆骨干创办陪伴机器人公司，获数千万元融资",
+    summary: "由美瞳品牌moody前高管与大疆技术骨干联合创立的陪伴机器人公司，定位\"创造生命\"，将消费级审美、大疆供应链与AI对话能力结合，获锦秋基金领投。",
+    category: "office",
+    tag: "办公自动化",
+    source: "36氪",
+    time: "1天前",
+    emoji: "🧸",
+    hot: false,
+    views: "8.9万",
+    comments: "467",
+    analysis: "陪伴机器人是2026年消费AI最火热的赛道之一。该团队的优势组合值得关注：moody前高管带来的消费品牌经验和年轻用户洞察，大疆骨干带来的硬件工程能力和供应链资源。\n\n产品定位：瞄准年轻人群体，首款桌面级情感陪伴机器人计划年内发布。与市面上的智能音箱不同，该产品强调\"生命感\"——具备表情、肢体语言和持续记忆的AI陪伴体验。\n\n市场空间：随着《人工智能拟人化互动服务管理暂行办法》的实施，情感AI服务将获得合法化的市场空间，但同时面临严格的合规要求（AI身份标识、防沉迷、未成年人保护等）。"
+  },
+  {
+    id: 17,
+    title: "拓荆科技收购无锡尚积半导体，补齐国产PVD与刻蚀短板",
+    summary: "国产半导体设备龙头拓荆科技拟收购无锡尚积半导体控股权，从CVD/ALD优势扩展至PVD和刻蚀两大核心工艺，进一步突破美国设备出口限制。",
+    category: "efficiency",
+    tag: "效率工具",
+    source: "快科技",
+    time: "2天前",
+    emoji: "🔧",
+    hot: false,
+    views: "7.6万",
+    comments: "328",
+    analysis: "这笔收购是国产半导体设备行业整合加速的缩影。拓荆科技在国内CVD（化学气相沉积）和ALD（原子层沉积）设备领域已处于领先地位，但PVD（物理气相沉积）和刻蚀设备仍是短板。\n\n战略意义：通过收购无锡尚积，拓荆将形成\"薄膜沉积+刻蚀\"的完整工艺覆盖，为客户提供一站式前道工艺解决方案。这将增强国产设备在先进制程节点（14nm及以下）的竞争力。\n\n地缘政治背景：在美国持续收紧对华半导体设备出口管制的背景下，国产设备自主化已上升为国家战略。拓荆此举也是在为\"国产替代2.0\"——从能用到好用——做准备。"
+  },
+  {
+    id: 18,
+    title: "Starlink面临挑战：乐天携手AST SpaceMobile推卫星直连手机服务",
+    summary: "日本乐天移动与美国AST SpaceMobile成立合资企业，计划在亚太地区提供普通手机直连卫星宽带服务，挑战星链在卫星通信领域的垄断地位。",
+    category: "dev",
+    tag: "开发者趋势",
+    source: "C114通信网",
+    time: "2天前",
+    emoji: "🛰️",
+    hot: false,
+    views: "10.3万",
+    comments: "589",
+    analysis: "卫星直连手机是通信行业最具想象力的赛道之一。与星链需要专用终端不同，AST SpaceMobile的BlueWalker卫星可直接服务普通智能手机，用户体验门槛更低。\n\n技术差异：星链主要服务于固定场景（家庭宽带、车载），而AST SpaceMobile专注于移动场景——用户无需更换手机或安装额外设备即可在无地面网络覆盖区域获得宽带服务。\n\n亚太市场格局：乐天移动在日本拥有移动通信牌照和基础设施，与AST SpaceMobile的技术能力形成互补。合资公司有望在日本、东南亚等岛屿密集、地面网络覆盖不足的地区获得显著市场优势。"
+  }
+];
+
+// ========== APP STATE ==========
+const state = {
+  theme: localStorage.getItem('ai-feed-theme') || 'dark',
+  bookmarks: JSON.parse(localStorage.getItem('ai-feed-bookmarks') || '[]'),
+  userTags: JSON.parse(localStorage.getItem('ai-feed-tags') || '["大模型","AI Agent","具身智能","多模态"]'),
+  activeCategory: 'all',
+  activePage: 'main',
+  searchQuery: '',
+  currentNewsId: null,
+  visibleCards: new Set()
+};
+
+// ========== INIT ==========
+document.addEventListener('DOMContentLoaded', () => {
+  setTheme(state.theme);
+  setDate();
+  renderTrending();
+  renderNews();
+  renderFavorites();
+  renderTags();
+  bindEvents();
+  initLazyObserver();
+  initScrollTop();
+});
+
+// ========== DATE ==========
+function setDate() {
+  const now = new Date();
+  const opts = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+  document.getElementById('todayDate').textContent = now.toLocaleDateString('zh-CN', opts);
+}
+
+// ========== THEME ==========
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  state.theme = theme;
+  localStorage.setItem('ai-feed-theme', theme);
+  const icon = document.getElementById('themeIcon');
+  if (theme === 'light') {
+    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+    icon.style.fill = 'none';
+    icon.style.stroke = 'currentColor';
+    icon.style.strokeWidth = '2';
+    icon.style.strokeLinecap = 'round';
+  } else {
+    icon.innerHTML = '<path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/>';
+    icon.style.fill = 'currentColor';
+    icon.style.stroke = 'none';
+  }
+}
+
+// ========== RENDER TRENDING ==========
+function renderTrending() {
+  const container = document.getElementById('trendingList');
+  const hotNews = newsData.filter(n => n.hot).sort((a, b) => parseFloat(b.views) - parseFloat(a.views)).slice(0, 5);
+  container.innerHTML = hotNews.map((n, i) => `
+    <div class="trending-card" onclick="openDetail(${n.id})" role="button" tabindex="0">
+      <div class="trending-rank r${i + 1}">${i + 1}</div>
+      <div class="trending-info">
+        <div class="trending-title">${n.title}</div>
+        <div class="trending-heat">${n.emoji} ${n.views} 阅读</div>
+      </div>
+      ${n.hot ? '<span class="hot-badge">HOT</span>' : ''}
+    </div>
+  `).join('');
+}
+
+// ========== RENDER NEWS ==========
+function renderNews() {
+  const container = document.getElementById('newsList');
+  let filtered = newsData;
+
+  if (state.activeCategory !== 'all') {
+    filtered = filtered.filter(n => n.category === state.activeCategory);
+  }
+
+  if (state.searchQuery) {
+    const q = state.searchQuery.toLowerCase();
+    filtered = filtered.filter(n =>
+      n.title.toLowerCase().includes(q) ||
+      n.summary.toLowerCase().includes(q) ||
+      n.tag.toLowerCase().includes(q)
+    );
+  }
+
+  document.getElementById('newsCount').textContent = `${filtered.length} 条`;
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <p>未找到相关新闻<br>试试其他关键词或分类</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map((n, i) => {
+    const isBookmarked = state.bookmarks.includes(n.id);
+    const catClass = n.category === 'ai' ? '' : `cat-${n.category}`;
+    return `
+    <article class="news-card" data-id="${n.id}" data-index="${i}" style="animation-delay:${Math.min(i * 0.06, 0.5)}s" role="article">
+      <div class="card-gradient-bar ${catClass}"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-tag tag-${n.category}">${n.tag}</span>
+          <span class="card-source">${n.source}</span>
+          ${n.hot ? '<span class="hot-badge">HOT</span>' : ''}
+          <span class="card-time">${n.time}</span>
+        </div>
+        <h2 class="card-title" onclick="openDetail(${n.id})">${n.title}</h2>
+        <p class="card-summary" onclick="openDetail(${n.id})">${n.summary}</p>
+        <div class="card-image-wrapper" data-news-id="${n.id}">
+          <div class="card-image-placeholder" data-lazy="${n.id}">${n.emoji}</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-stats">
+            <span class="card-stat"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/></svg>${n.views}</span>
+            <span class="card-stat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${n.comments}</span>
+          </div>
+          <button class="card-bookmark ${isBookmarked ? 'bookmarked' : ''}" onclick="toggleBookmark(${n.id}, event)" aria-label="${isBookmarked ? '取消收藏' : '收藏'}">
+            <svg viewBox="0 0 24 24">${isBookmarked
+              ? '<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" fill="currentColor"/>'
+              : '<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" fill="none" stroke="currentColor" stroke-width="2"/>'}</svg>
+          </button>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+// ========== BOOKMARK ==========
+function toggleBookmark(id, e) {
+  e.stopPropagation();
+  const idx = state.bookmarks.indexOf(id);
+  if (idx > -1) {
+    state.bookmarks.splice(idx, 1);
+    showToast('已取消收藏');
+  } else {
+    state.bookmarks.push(id);
+    showToast('已收藏');
+  }
+  localStorage.setItem('ai-feed-bookmarks', JSON.stringify(state.bookmarks));
+  renderNews();
+  renderFavorites();
+}
+
+// ========== FAVORITES ==========
+function renderFavorites() {
+  const container = document.getElementById('favNewsList');
+  const favNews = newsData.filter(n => state.bookmarks.includes(n.id));
+
+  if (favNews.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">💾</div>
+        <p>暂无收藏新闻<br>点击新闻卡片的书签图标即可收藏</p>
+      </div>`;
+  } else {
+    container.innerHTML = favNews.map(n => `
+      <div class="trending-card" onclick="openDetail(${n.id})" role="button" tabindex="0" style="padding:14px 16px;margin-bottom:10px">
+        <div style="font-size:28px;flex-shrink:0">${n.emoji}</div>
+        <div class="trending-info">
+          <div class="trending-title">${n.title}</div>
+          <div class="trending-heat">${n.tag} · ${n.time}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+// ========== TAGS ==========
+function renderTags() {
+  const container = document.getElementById('tagsCloud');
+  container.innerHTML = state.userTags.map((tag, i) => `
+    <span class="user-tag">
+      <span class="tag-color-${i % 6}" style="width:8px;height:8px;border-radius:50%;display:inline-block"></span>
+      ${tag}
+      <button class="remove-tag" onclick="removeTag(${i})">&times;</button>
+    </span>
+  `).join('');
+}
+
+function removeTag(index) {
+  state.userTags.splice(index, 1);
+  localStorage.setItem('ai-feed-tags', JSON.stringify(state.userTags));
+  renderTags();
+  showToast('标签已删除');
+}
+
+// ========== DETAIL PANEL ==========
+function openDetail(id) {
+  const news = newsData.find(n => n.id === id);
+  if (!news) return;
+  state.currentNewsId = id;
+
+  const related = newsData.filter(n => n.id !== id && (n.category === news.category || n.tag === news.tag)).slice(0, 4);
+  const isBookmarked = state.bookmarks.includes(id);
+
+  const scroll = document.getElementById('detailScroll');
+  scroll.innerHTML = `
+    <div class="detail-tag-row">
+      <span class="card-tag tag-${news.category}">${news.tag}</span>
+      ${news.hot ? '<span class="hot-badge">HOT</span>' : ''}
+    </div>
+    <h1 class="detail-title">${news.title}</h1>
+    <div class="detail-meta-row">
+      <span>${news.emoji} ${news.source}</span>
+      <span>${news.time}</span>
+      <span>${news.views} 阅读</span>
+      <span>${news.comments} 评论</span>
+    </div>
+    <div class="detail-image">${news.emoji}</div>
+    <div class="detail-content">
+      <p>${news.summary}</p>
+      <p>在AI技术持续加速迭代的背景下，这一事件/技术/产品引发了业界广泛关注。以下从多个维度进行深度分析：</p>
+    </div>
+    <div class="detail-analysis">
+      <h3>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        深度分析
+      </h3>
+      ${news.analysis.split('\n\n').map(p => `<p>${p}</p>`).join('')}
+    </div>
+    <div class="detail-actions">
+      <button class="detail-action-btn primary" onclick="toggleBookmarkDetail(${id})">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        ${isBookmarked ? '已收藏' : '收藏'}
+      </button>
+      <button class="detail-action-btn" onclick="shareNews(${id})">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        分享
+      </button>
+    </div>
+    <div class="related-section">
+      <div class="section-header">
+        <div class="section-title"><span class="dot"></span>相关推荐</div>
+      </div>
+      ${related.map(r => `
+        <div class="related-card" onclick="openDetail(${r.id})" role="button" tabindex="0">
+          <div class="related-thumb">${r.emoji}</div>
+          <div class="related-info">
+            <div class="related-title">${r.title}</div>
+            <div class="related-meta">${r.tag} · ${r.time}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  scroll.scrollTop = 0;
+  document.getElementById('detailOverlay').classList.add('active');
+  document.getElementById('detailPanel').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDetail() {
+  document.getElementById('detailOverlay').classList.remove('active');
+  document.getElementById('detailPanel').classList.remove('active');
+  document.body.style.overflow = '';
+  state.currentNewsId = null;
+}
+
+function toggleBookmarkDetail(id) {
+  toggleBookmark(id, { stopPropagation: () => {} });
+  openDetail(id); // re-render
+}
+
+function shareNews(id) {
+  const news = newsData.find(n => n.id === id);
+  if (navigator.share) {
+    navigator.share({ title: news.title, text: news.summary });
+  } else {
+    navigator.clipboard.writeText(news.title + ' - ' + news.summary).then(() => {
+      showToast('已复制到剪贴板');
+    });
+  }
+}
+
+// ========== EVENTS ==========
+function bindEvents() {
+  // Theme toggle
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    setTheme(state.theme === 'dark' ? 'light' : 'dark');
+  });
+
+  // Category tabs
+  document.getElementById('categoryTabs').addEventListener('click', (e) => {
+    const tab = e.target.closest('.category-tab');
+    if (!tab) return;
+    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    state.activeCategory = tab.dataset.cat;
+    renderNews();
+  });
+
+  // Search
+  const searchInput = document.getElementById('searchInput');
+  const searchClear = document.getElementById('searchClear');
+  let searchTimer;
+  searchInput.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+      state.searchQuery = searchInput.value.trim();
+      searchClear.classList.toggle('visible', !!state.searchQuery);
+      renderNews();
+    }, 250);
+  });
+  searchClear.addEventListener('click', () => {
+    searchInput.value = '';
+    state.searchQuery = '';
+    searchClear.classList.remove('visible');
+    renderNews();
+    searchInput.focus();
+  });
+
+  // Detail close
+  document.getElementById('detailOverlay').addEventListener('click', closeDetail);
+
+  // Panel swipe down to close
+  let startY = 0;
+  const panel = document.getElementById('detailPanel');
+  panel.addEventListener('touchstart', (e) => {
+    const scroll = document.getElementById('detailScroll');
+    if (scroll.scrollTop <= 0) {
+      startY = e.touches[0].clientY;
+    }
+  }, { passive: true });
+  panel.addEventListener('touchmove', (e) => {
+    if (startY > 0 && e.touches[0].clientY - startY > 80) {
+      closeDetail();
+      startY = 0;
+    }
+  }, { passive: true });
+
+  // Bottom nav
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const page = item.dataset.page;
+      switchPage(page);
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+
+  // Fav back
+  document.getElementById('favBackBtn').addEventListener('click', () => {
+    switchPage('main');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelector('.nav-item[data-page="main"]').classList.add('active');
+  });
+
+  // Add tag
+  document.getElementById('addTagBtn').addEventListener('click', addTag);
+  document.getElementById('newTagInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') addTag();
+  });
+}
+
+function addTag() {
+  const input = document.getElementById('newTagInput');
+  const val = input.value.trim();
+  if (!val) return;
+  if (state.userTags.includes(val)) {
+    showToast('标签已存在');
+    return;
+  }
+  if (state.userTags.length >= 20) {
+    showToast('最多添加20个标签');
+    return;
+  }
+  state.userTags.push(val);
+  localStorage.setItem('ai-feed-tags', JSON.stringify(state.userTags));
+  renderTags();
+  input.value = '';
+  showToast('标签已添加');
+}
+
+function switchPage(page) {
+  state.activePage = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  if (page === 'main') {
+    document.getElementById('mainPage').classList.add('active');
+  } else if (page === 'fav') {
+    document.getElementById('favPage').classList.add('active');
+    renderFavorites();
+    renderTags();
+  } else if (page === 'discover') {
+    // Switch to main with all category
+    document.getElementById('mainPage').classList.add('active');
+    state.activeCategory = 'all';
+    state.searchQuery = '';
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchClear').classList.remove('visible');
+    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.category-tab[data-cat="all"]').classList.add('active');
+    renderNews();
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ========== TOAST ==========
+function showToast(msg) {
+  const existing = document.querySelector('.toast-msg');
+  if (existing) existing.remove();
+
+  const toast = document.createElement('div');
+  toast.className = 'toast-msg';
+  toast.textContent = msg;
+  toast.style.cssText = `
+    position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);
+    background:var(--bg-elevated);color:var(--text-primary);
+    padding:10px 24px;border-radius:var(--radius-full);
+    font-size:14px;font-weight:500;
+    box-shadow:var(--shadow-lg);
+    z-index:999;opacity:0;
+    transition:all 0.3s ease;
+    border:1px solid var(--border-color-strong);
+  `;
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => {
+    toast.style.opacity = '1';
+    toast.style.transform = 'translate(-50%,-50%) scale(1)';
+  });
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translate(-50%,-50%) scale(0.8)';
+    setTimeout(() => toast.remove(), 300);
+  }, 1500);
+}
+
+// ========== LAZY LOADING (IntersectionObserver) ==========
+function initLazyObserver() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: '50px', threshold: 0.1 });
+
+  function observeCards() {
+    document.querySelectorAll('.news-card').forEach(card => {
+      observer.observe(card);
+    });
+  }
+  observeCards();
+  // Re-observe on render
+  const origRender = renderNews;
+  renderNews = function () {
+    origRender.call(this);
+    setTimeout(observeCards, 50);
+  };
+}
+
+// ========== SCROLL TO TOP ==========
+function initScrollTop() {
+  const btn = document.getElementById('scrollTopBtn');
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 600);
+  }, { passive: true });
+  btn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+// ========== VIRTUAL SCROLL SIMULATION ==========
+// Only render cards that are near the viewport
+(function simulateVirtualScroll() {
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const cards = document.querySelectorAll('.news-card');
+        const viewH = window.innerHeight;
+        cards.forEach(card => {
+          const rect = card.getBoundingClientRect();
+          if (rect.top < viewH + 200 && rect.bottom > -200) {
+            card.style.opacity = '';
+            card.style.transform = '';
+          }
+        });
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
