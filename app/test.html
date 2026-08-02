@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>DailyHotspot 功能测试</title>
+  <link rel="stylesheet" href="./styles/main.css" />
+  <style>
+    /* 测试页专属：隐藏底部测试浮动按钮，避免重复 */
+    #test-panel { display: none !important; }
+    .test-banner {
+      text-align: center;
+      padding: 12px;
+      font-size: 13px;
+      color: var(--text-tertiary);
+      background: var(--bg-chip);
+    }
+  </style>
+</head>
+<body>
+  <!-- ====================================================================
+       测试页：复用应用骨架，使 app.js 正常初始化后自动运行测试
+       （测试工程师：提供独立可运行的测试入口）
+       ==================================================================== -->
+  <div class="app" id="app">
+
+    <header class="app-header">
+      <div class="logo">每日热点<span class="sub">测试模式</span></div>
+      <div class="search-box" id="searchBox">
+        <span class="icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="搜索热点" autocomplete="off" />
+        <button class="clear-btn" id="searchClear" aria-label="清除">✕</button>
+      </div>
+      <button class="theme-toggle" id="themeToggle" aria-label="切换主题">🌙</button>
+    </header>
+
+    <main class="app-main" id="appMain">
+      <section class="view-container active" id="view-home" data-view="home">
+        <div class="pull-refresh" id="pullRefresh">
+          <span class="pr-icon">⬇️</span>
+          <span class="pr-text">下拉刷新</span>
+        </div>
+        <div class="view-inner">
+          <div class="category-bar" id="categoryBar"></div>
+          <div class="news-list" id="newsList"></div>
+          <div class="load-more" id="loadMore" style="display:none;"></div>
+        </div>
+      </section>
+
+      <section class="view-container" id="view-category" data-view="category">
+        <div class="view-inner">
+          <div class="dash-section">
+            <div class="sec-title">📂 分类总览</div>
+            <div id="categoryGrid"></div>
+          </div>
+          <div class="dash-section">
+            <div class="sec-title">📋 分类热点</div>
+            <div class="news-list" id="categoryNewsList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view-container" id="view-recommend" data-view="recommend">
+        <div class="view-inner">
+          <div class="rec-banner">
+            <div class="rb-title">为你智能推荐</div>
+            <div class="rb-desc" id="recBannerDesc">基于兴趣标签智能排序…</div>
+          </div>
+          <div class="interest-manager">
+            <div class="im-title">🎯 我的兴趣标签</div>
+            <div class="interest-tags" id="interestTags"></div>
+          </div>
+          <div class="dash-section">
+            <div class="sec-title">🔥 推荐热点</div>
+            <div class="news-list" id="recList"></div>
+          </div>
+          <div class="dash-section">
+            <div class="sec-title">📊 效率仪表盘</div>
+            <div class="metrics-grid" id="metricsGrid"></div>
+            <div class="dash-card" style="margin-bottom:16px;">
+              <div class="sec-title" style="font-size:13px;">近7天阅读热点数</div>
+              <div class="bar-chart" id="barChart"></div>
+            </div>
+            <div class="dash-card">
+              <div class="sec-title" style="font-size:13px;">分类偏好</div>
+              <div class="donut-wrap">
+                <div class="donut" id="donut" data-score=""></div>
+                <div class="donut-legend" id="donutLegend"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view-container" id="view-mine" data-view="mine">
+        <div class="view-inner">
+          <div class="profile-card" id="profileCard"></div>
+          <div class="profile-stats" id="profileStats"></div>
+          <div class="dash-card" style="margin-bottom:16px;">
+            <div class="sec-title" style="font-size:13px;display:flex;justify-content:space-between;">
+              <span>AI 信息消费效率得分</span>
+              <span id="scoreVal" style="color:var(--color-success);">0</span>
+            </div>
+            <div class="score-bar"><div class="score-fill" id="scoreFill"></div></div>
+          </div>
+          <div class="menu-list">
+            <div class="menu-item" data-action="about"><span class="mi-icon">ℹ️</span><span class="mi-text">关于</span><span class="mi-arrow">›</span></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" id="tabbar">
+      <button class="tab-item active" data-view="home"><span class="tab-icon">🏠</span><span>首页</span></button>
+      <button class="tab-item" data-view="category"><span class="tab-icon">📂</span><span>分类</span></button>
+      <button class="tab-item" data-view="recommend"><span class="tab-icon">✨</span><span>推荐</span></button>
+      <button class="tab-item" data-view="mine"><span class="tab-icon">👤</span><span>我的</span></button>
+    </nav>
+
+    <div class="modal-mask" id="modalMask">
+      <div class="modal-sheet" id="modalSheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-title" id="sheetTitle">多视角解读</div>
+        <div class="sheet-sub" id="sheetSub"></div>
+        <div class="sheet-body" id="sheetBody"></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    <div class="test-banner">🧪 测试模式：页面加载后自动运行全部测试用例</div>
+  </div>
+
+  <script src="./js/data.js"></script>
+  <script src="./js/app.js"></script>
+  <script src="./js/test.js"></script>
+  <script>
+    // 应用初始化完成后自动运行测试
+    window.addEventListener('load', function () {
+      // 稍作延迟，确保首屏渲染稳定
+      setTimeout(function () {
+        if (window.DailyHotspotTest) {
+          window.DailyHotspotTest.run().then(function (results) {
+            var failed = results.filter(function (r) { return r.status === 'fail'; }).length;
+            console.log(failed === 0
+              ? '%c全部测试通过 ✅', 'color:#0bb6a6;font-weight:bold;'
+              : '%c有 ' + failed + ' 项测试未通过 ❌', 'color:#ff6b6b;font-weight:bold;');
+          });
+        }
+      }, 300);
+    });
+  </script>
+</body>
+</html>

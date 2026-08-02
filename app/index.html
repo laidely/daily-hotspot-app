@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <!-- 移动端 viewport：适配各种手机屏幕，禁用缩放避免双击延迟 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#5b6cff" />
+  <meta name="description" content="每日热点智能聚合器 DailyHotspot —— 移动端AI热点聚合应用" />
+  <title>每日热点 · DailyHotspot</title>
+  <link rel="stylesheet" href="./styles/main.css" />
+</head>
+<body>
+  <!-- ====================================================================
+       应用骨架（移动端架构师：单视图容器 + 绝对定位切换，避免重排抖动）
+       ==================================================================== -->
+  <div class="app" id="app">
+
+    <!-- ===================== 顶部头部 ===================== -->
+    <header class="app-header">
+      <div class="logo">每日热点<span class="sub">DailyHotspot</span></div>
+      <!-- 搜索框（前端开发者：带防抖的实时搜索） -->
+      <div class="search-box" id="searchBox">
+        <span class="icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="搜索热点 / 标签 / 关键词" autocomplete="off" />
+        <button class="clear-btn" id="searchClear" aria-label="清除">✕</button>
+      </div>
+      <!-- 主题切换（深浅色） -->
+      <button class="theme-toggle" id="themeToggle" aria-label="切换主题">🌙</button>
+    </header>
+
+    <!-- ===================== 主内容区（四视图） ===================== -->
+    <main class="app-main" id="appMain">
+
+      <!-- -------- 视图1：首页（热点信息流） -------- -->
+      <section class="view-container active" id="view-home" data-view="home">
+        <div class="pull-refresh" id="pullRefresh">
+          <span class="pr-icon">⬇️</span>
+          <span class="pr-text">下拉刷新</span>
+        </div>
+        <div class="view-inner">
+          <!-- 分类筛选条 -->
+          <div class="category-bar" id="categoryBar"></div>
+          <!-- 热点列表（虚拟列表容器） -->
+          <div class="news-list" id="newsList"></div>
+          <!-- 上拉加载更多 -->
+          <div class="load-more" id="loadMore" style="display:none;">
+            <span class="lm-spinner"></span> 正在加载更多...
+          </div>
+        </div>
+      </section>
+
+      <!-- -------- 视图2：分类（按分类浏览全部） -------- -->
+      <section class="view-container" id="view-category" data-view="category">
+        <div class="view-inner">
+          <div class="dash-section">
+            <div class="sec-title">📂 分类总览</div>
+            <div id="categoryGrid"></div>
+          </div>
+          <div class="dash-section">
+            <div class="sec-title">📋 分类热点</div>
+            <div class="news-list" id="categoryNewsList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- -------- 视图3：推荐（个性化推荐 + 效率仪表盘） -------- -->
+      <section class="view-container" id="view-recommend" data-view="recommend">
+        <div class="view-inner">
+          <!-- 推荐横幅 -->
+          <div class="rec-banner">
+            <div class="rb-title">为你智能推荐</div>
+            <div class="rb-desc" id="recBannerDesc">基于你的兴趣标签，AI 正在筛选最相关的热点…</div>
+          </div>
+
+          <!-- 兴趣标签管理 -->
+          <div class="interest-manager">
+            <div class="im-title">🎯 我的兴趣标签（点击切换）</div>
+            <div class="interest-tags" id="interestTags"></div>
+          </div>
+
+          <!-- 推荐列表 -->
+          <div class="dash-section">
+            <div class="sec-title">🔥 推荐热点</div>
+            <div class="news-list" id="recList"></div>
+          </div>
+
+          <!-- 效率仪表盘 -->
+          <div class="dash-section">
+            <div class="sec-title">📊 效率仪表盘</div>
+
+            <!-- 关键指标 -->
+            <div class="metrics-grid" id="metricsGrid"></div>
+
+            <!-- 每日阅读柱状图 -->
+            <div class="dash-card" style="margin-bottom:16px;">
+              <div class="sec-title" style="font-size:13px;">近7天阅读热点数</div>
+              <div class="bar-chart" id="barChart"></div>
+            </div>
+
+            <!-- 分类偏好环形图 -->
+            <div class="dash-card">
+              <div class="sec-title" style="font-size:13px;">分类偏好</div>
+              <div class="donut-wrap">
+                <div class="donut" id="donut" data-score=""></div>
+                <div class="donut-legend" id="donutLegend"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- -------- 视图4：我的（用户中心） -------- -->
+      <section class="view-container" id="view-mine" data-view="mine">
+        <div class="view-inner">
+          <!-- 用户卡 -->
+          <div class="profile-card" id="profileCard"></div>
+          <!-- 数据统计 -->
+          <div class="profile-stats" id="profileStats"></div>
+
+          <!-- 效率得分 -->
+          <div class="dash-card" style="margin-bottom:16px;">
+            <div class="sec-title" style="font-size:13px;display:flex;justify-content:space-between;">
+              <span>AI 信息消费效率得分</span>
+              <span id="scoreVal" style="color:var(--color-success);">0</span>
+            </div>
+            <div class="score-bar"><div class="score-fill" id="scoreFill"></div></div>
+            <div style="font-size:11px;color:var(--text-tertiary);margin-top:6px;">
+              得分综合阅读量、摘要生成数与分类均衡度
+            </div>
+          </div>
+
+          <!-- 菜单 -->
+          <div class="menu-list">
+            <div class="menu-item" data-action="theme">
+              <span class="mi-icon">🎨</span>
+              <span class="mi-text">切换深浅色主题</span>
+              <span class="mi-arrow">›</span>
+            </div>
+            <div class="menu-item" data-action="interests">
+              <span class="mi-icon">🎯</span>
+              <span class="mi-text">管理兴趣标签</span>
+              <span class="mi-arrow">›</span>
+            </div>
+            <div class="menu-item" data-action="refresh">
+              <span class="mi-icon">🔄</span>
+              <span class="mi-text">刷新热点数据</span>
+              <span class="mi-arrow">›</span>
+            </div>
+            <div class="menu-item" data-action="test">
+              <span class="mi-icon">🧪</span>
+              <span class="mi-text">运行功能测试</span>
+              <span class="mi-arrow">›</span>
+            </div>
+            <div class="menu-item" data-action="about">
+              <span class="mi-icon">ℹ️</span>
+              <span class="mi-text">关于 DailyHotspot</span>
+              <span class="mi-arrow">›</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ===================== 底部 Tab 导航栏 ===================== -->
+    <nav class="tabbar" id="tabbar">
+      <button class="tab-item active" data-view="home">
+        <span class="tab-icon">🏠</span>
+        <span>首页</span>
+      </button>
+      <button class="tab-item" data-view="category">
+        <span class="tab-icon">📂</span>
+        <span>分类</span>
+      </button>
+      <button class="tab-item" data-view="recommend">
+        <span class="tab-icon">✨</span>
+        <span>推荐</span>
+      </button>
+      <button class="tab-item" data-view="mine">
+        <span class="tab-icon">👤</span>
+        <span>我的</span>
+      </button>
+    </nav>
+
+    <!-- ===================== 多视角解读弹窗 ===================== -->
+    <div class="modal-mask" id="modalMask">
+      <div class="modal-sheet" id="modalSheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-title" id="sheetTitle">多视角解读</div>
+        <div class="sheet-sub" id="sheetSub"></div>
+        <div class="sheet-body" id="sheetBody"></div>
+      </div>
+    </div>
+
+    <!-- ===================== Toast 提示 ===================== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ===================== 浮动测试入口 ===================== -->
+    <button id="test-panel" aria-label="运行测试">测试</button>
+  </div>
+
+  <!-- ====================================================================
+       脚本加载（注意顺序：数据 -> 逻辑 -> 测试）
+       ==================================================================== -->
+  <script src="./js/data.js"></script>
+  <script src="./js/app.js"></script>
+  <script src="./js/test.js"></script>
+</body>
+</html>
