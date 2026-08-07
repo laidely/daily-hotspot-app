@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <!-- 移动端 viewport：width=device-width，禁缩放，支持 viewport-fit=cover 以适配安全区域 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#6366f1" />
+  <meta name="description" content="AI热点效率站 - 每日AI热点信息过载+工具选择困难一站式解决方案" />
+  <title>AI热点效率站</title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <!-- ============ 应用根容器 ============ -->
+  <div id="app" class="app">
+
+    <!-- ============ 顶部标题栏 ============ -->
+    <header class="app-header" id="appHeader">
+      <div class="header-inner">
+        <h1 class="header-title" id="headerTitle">AI热点效率站</h1>
+        <div class="header-actions">
+          <!-- 搜索按钮（首页可见） -->
+          <button class="icon-btn" id="searchBtn" aria-label="搜索" title="搜索">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/>
+            </svg>
+          </button>
+          <!-- 主题切换按钮 -->
+          <button class="icon-btn" id="themeToggle" aria-label="切换主题" title="切换深色/浅色">
+            <svg class="icon-sun" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path fill="currentColor" d="M12 7a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0-5a1 1 0 0 1 1 1v2a1 1 0 0 1-2 0V3a1 1 0 0 1 1-1zm0 17a1 1 0 0 1 1 1v2a1 1 0 0 1-2 0v-2a1 1 0 0 1 1-1zM4.22 4.22a1 1 0 0 1 1.41 0l1.42 1.42a1 1 0 1 1-1.41 1.41L4.22 5.63a1 1 0 0 1 0-1.41zm12.73 12.73a1 1 0 0 1 1.41 0l1.42 1.42a1 1 0 0 1-1.41 1.41l-1.42-1.42a1 1 0 0 1 0-1.41zM2 12a1 1 0 0 1 1-1h2a1 1 0 0 1 0 2H3a1 1 0 0 1-1-1zm17 0a1 1 0 0 1 1-1h2a1 1 0 0 1 0 2h-2a1 1 0 0 1-1-1zM4.22 19.78a1 1 0 0 1 0-1.41l1.42-1.42a1 1 0 1 1 1.41 1.41l-1.42 1.42a1 1 0 0 1-1.41 0zM16.95 7.05a1 1 0 0 1 0-1.41l1.42-1.42a1 1 0 1 1 1.41 1.41l-1.42 1.42a1 1 0 0 1-1.41 0z"/>
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path fill="currentColor" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============ 主内容区（5 个 Tab 视图） ============ -->
+    <main class="app-main" id="appMain">
+
+      <!-- ----- 视图1：首页热点流 ----- -->
+      <section class="view" id="view-home" data-tab="home" aria-label="首页热点流">
+        <!-- 下拉刷新指示器 -->
+        <div class="pull-refresh-indicator" id="pullIndicator">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="pull-text">下拉刷新</span>
+        </div>
+
+        <!-- 今日概览 banner -->
+        <div class="today-banner">
+          <div class="today-banner__bg" aria-hidden="true"></div>
+          <div class="today-banner__content">
+            <p class="today-banner__label">今日 AI 办公速览</p>
+            <h2 class="today-banner__title">巨头抢滩智能体市场</h2>
+            <p class="today-banner__desc">全球 Agent 市场 187 亿美元 · 同比 +215%</p>
+          </div>
+        </div>
+
+        <!-- 热点新闻列表（JS 动态渲染） -->
+        <div class="section-head">
+          <h3 class="section-head__title">🔥 热点新闻</h3>
+          <span class="section-head__extra" id="newsCount">共 0 条</span>
+        </div>
+        <div class="news-list" id="newsList" role="list"></div>
+
+        <!-- 上拉加载更多 -->
+        <div class="load-more" id="loadMore">
+          <span class="spinner spinner--sm" aria-hidden="true"></span>
+          <span class="load-more__text">上拉加载更多</span>
+        </div>
+      </section>
+
+      <!-- ----- 视图2：痛点分析（大佬圆桌） ----- -->
+      <section class="view view--hidden" id="view-pain" data-tab="pain" aria-label="痛点分析">
+        <div class="view-intro">
+          <h2 class="view-intro__title">大佬圆桌 · 痛点视角</h2>
+          <p class="view-intro__desc">四位行业领袖如何看待 AI 办公的痛点与破局之道</p>
+        </div>
+        <div class="perspective-list" id="perspectiveList" role="list"></div>
+      </section>
+
+      <!-- ----- 视图3：效率工具推荐 ----- -->
+      <section class="view view--hidden" id="view-tools" data-tab="tools" aria-label="效率工具推荐">
+        <div class="view-intro">
+          <h2 class="view-intro__title">效率工具推荐</h2>
+          <p class="view-intro__desc">精选 2026 AI 办公提效工具，一键收藏</p>
+        </div>
+        <!-- 分类筛选 -->
+        <div class="filter-bar" id="toolFilter" role="tablist"></div>
+        <div class="tool-list" id="toolList" role="list"></div>
+      </section>
+
+      <!-- ----- 视图4：AI 助手对话框 ----- -->
+      <section class="view view--hidden" id="view-assistant" data-tab="assistant" aria-label="AI助手">
+        <div class="chat-window" id="chatWindow">
+          <!-- 对话消息由 JS 渲染 -->
+          <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+        </div>
+        <!-- 快捷问题 -->
+        <div class="chat-quick" id="chatQuick"></div>
+        <!-- 输入区 -->
+        <form class="chat-input-bar" id="chatForm">
+          <input
+            type="text"
+            class="chat-input"
+            id="chatInput"
+            placeholder="问问 AI 办公那些事…"
+            autocomplete="off"
+            enterkeyhint="send"
+          />
+          <button type="submit" class="chat-send" id="chatSend" aria-label="发送">发送</button>
+        </form>
+      </section>
+
+      <!-- ----- 视图5：个人中心 ----- -->
+      <section class="view view--hidden" id="view-profile" data-tab="profile" aria-label="个人中心">
+        <!-- 用户卡片 -->
+        <div class="profile-card">
+          <div class="profile-card__avatar" aria-hidden="true">效</div>
+          <div class="profile-card__info">
+            <p class="profile-card__name">效率探索者</p>
+            <p class="profile-card__desc">让 AI 嵌入你的真实工作流</p>
+          </div>
+        </div>
+
+        <!-- 数据统计 -->
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-item">
+            <span class="stat-item__num" id="statFav">0</span>
+            <span class="stat-item__label">收藏</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-item__num" id="statHis">0</span>
+            <span class="stat-item__label">阅读历史</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-item__num" id="statNews">0</span>
+            <span class="stat-item__label">今日热点</span>
+          </div>
+        </div>
+
+        <!-- 主题切换 -->
+        <div class="setting-row" id="themeRow">
+          <span class="setting-row__icon">🌓</span>
+          <span class="setting-row__label">深色模式</span>
+          <label class="switch">
+            <input type="checkbox" id="themeSwitch" />
+            <span class="switch__slider"></span>
+          </label>
+        </div>
+
+        <!-- 收藏夹与历史切换 -->
+        <div class="profile-tabs" id="profileTabs" role="tablist">
+          <button class="profile-tab profile-tab--active" data-ptab="fav" role="tab">收藏夹</button>
+          <button class="profile-tab" data-ptab="his" role="tab">阅读历史</button>
+        </div>
+        <div class="profile-list" id="profileList"></div>
+      </section>
+
+    </main>
+
+    <!-- ============ 底部 Tab 导航栏 ============ -->
+    <nav class="tabbar" id="tabbar" aria-label="主导航">
+      <button class="tabbar__item tabbar__item--active" data-tab="home" role="tab" aria-selected="true">
+        <span class="tabbar__icon">🏠</span>
+        <span class="tabbar__label">首页</span>
+      </button>
+      <button class="tabbar__item" data-tab="pain" role="tab" aria-selected="false">
+        <span class="tabbar__icon">💡</span>
+        <span class="tabbar__label">痛点</span>
+      </button>
+      <button class="tabbar__item" data-tab="tools" role="tab" aria-selected="false">
+        <span class="tabbar__icon">🛠️</span>
+        <span class="tabbar__label">工具</span>
+      </button>
+      <button class="tabbar__item" data-tab="assistant" role="tab" aria-selected="false">
+        <span class="tabbar__icon">🤖</span>
+        <span class="tabbar__label">助手</span>
+      </button>
+      <button class="tabbar__item" data-tab="profile" role="tab" aria-selected="false">
+        <span class="tabbar__icon">👤</span>
+        <span class="tabbar__label">我的</span>
+      </button>
+    </nav>
+
+    <!-- ============ 详情弹层（热点详情 / 工具详情） ============ -->
+    <div class="modal" id="detailModal" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="modal__mask" id="modalMask"></div>
+      <div class="modal__panel" id="modalPanel" role="document">
+        <button class="modal__close" id="modalClose" aria-label="关闭">×</button>
+        <div class="modal__body" id="modalBody"></div>
+      </div>
+    </div>
+
+    <!-- ============ 轻提示 ============ -->
+    <div class="toast" id="toast" aria-live="assertive"></div>
+
+  </div>
+
+  <!-- ============ 脚本（顺序：数据 -> 逻辑） ============ -->
+  <script src="./js/data.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
